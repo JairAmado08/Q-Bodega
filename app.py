@@ -449,7 +449,7 @@ with st.sidebar:
         }
         </style>
         <div class="sidebar-logo">
-            <img src="https://raw.githubusercontent.com/JairAmado08/BodegaALaMano/main/images/ALMlogo.png">
+            <img src="https://github.com/JairAmado08/Q-Bodega/tree/main/images/Q'Bodega.png">
         </div>
         """,
         unsafe_allow_html=True
