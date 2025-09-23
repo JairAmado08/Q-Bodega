@@ -425,7 +425,7 @@ with st.sidebar:
     <div class="user-info">
         <h4>👤 Usuario Activo</h4>
         <p><strong>{display_name}</strong></p>
-        <p><small>Empleado de Bodega ALM</small></p>
+        <p><small>Empleado de Bodega XYZ</small></p>
     </div>
     """, unsafe_allow_html=True)
     
