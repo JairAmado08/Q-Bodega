@@ -75,8 +75,11 @@ Satisfacción del cliente: Lograr que el bodeguero perciba una mejora significat
   - Se añadió un historial de movimientos junto a su respectivo dashboard.
 
 - **v3.0 (Noviembre 14 de 2025)**  
-  - Se estructuró el proyecto para lograr 
-
+  - Se reorganizó toda la estructura del proyecto para lograr una arquitectura más modular, escalable y mantenible.
+  - Se separaron las vistas, componentes UI y operaciones CRUD en módulos independientes para mejorar la claridad del código.
+  - Se optimizó el flujo de navegación entre módulos mediante un enrutador interno más ordenado.
+  - Se estandarizaron nombres, rutas y archivos para una mejor consistencia en el desarrollo.
+  - Se preparó la base del proyecto para futuras integraciones como reportes avanzados, nuevos módulos, etc.
 
 --- 
 ## Estructura del Proyecto
