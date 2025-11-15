@@ -128,23 +128,32 @@ def mostrar_sidebar(display_name):
             "🗑️ Eliminar Promoción": "eliminar_promocion"
         }
         
-        # Determinar qué opción fue seleccionada
-        # Streamlit guarda el estado de cada radio button
-        # Determinar qué radio fue modificado
-        if st.session_state.get("radio_inventario") in menu_options:
-            opcion_seleccionada = st.session_state.radio_inventario
-        elif st.session_state.get("radio_movimientos") in menu_options:
-            opcion_seleccionada = st.session_state.radio_movimientos
-        elif st.session_state.get("radio_promociones") in menu_options:
-            opcion_seleccionada = st.session_state.radio_promociones
-        else:
-            opcion_seleccionada = "🎁 Dashboard de Promociones"
-
+        # ======================================
+        # SELECCIÓN CORRECTA DE MENÚ
+        # ======================================
         
-        # Por defecto mostrar dashboard de promociones
-        if opcion_seleccionada is None:
-            opcion_seleccionada = "🎁 Dashboard de Promociones"
+        # Inicializar opción actual si no existe
+        if "opcion_actual" not in st.session_state:
+            st.session_state["opcion_actual"] = "🎁 Dashboard de Promociones"
         
+        # Leer los radios
+        op_inv = st.session_state.get("radio_inventario")
+        op_mov = st.session_state.get("radio_movimientos")
+        op_pro = st.session_state.get("radio_promociones")
+        
+        # Si alguno cambió, actualizar la opción actual
+        if op_inv and op_inv != st.session_state["opcion_actual"]:
+            st.session_state["opcion_actual"] = op_inv
+        
+        elif op_mov and op_mov != st.session_state["opcion_actual"]:
+            st.session_state["opcion_actual"] = op_mov
+        
+        elif op_pro and op_pro != st.session_state["opcion_actual"]:
+            st.session_state["opcion_actual"] = op_pro
+        
+        # Determinar clave final
+        opcion_seleccionada = st.session_state["opcion_actual"]
         opcion_key = menu_options.get(opcion_seleccionada, "promociones_dashboard")
         
         return opcion_key
+
