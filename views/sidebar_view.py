@@ -5,6 +5,7 @@ import streamlit as st
 from auth import logout_user
 from ui_components import mostrar_user_info, mostrar_logo
 from inventario_crud import obtener_estadisticas
+from promociones_crud import obtener_estadisticas_promociones
 
 def mostrar_sidebar(display_name):
     """
@@ -34,6 +35,7 @@ def mostrar_sidebar(display_name):
         # Métricas
         # ----------------------------
         total_productos, total_cantidad, valor_total, productos_bajo_stock = obtener_estadisticas()
+        stats_promociones = obtener_estadisticas_promociones()
         
         st.markdown("### 📊 Estadísticas")
         col1, col2 = st.columns(2)
@@ -44,12 +46,23 @@ def mostrar_sidebar(display_name):
             st.metric("📈 Stock Total", total_cantidad)
             st.metric("⚠️ Bajo Stock", productos_bajo_stock, delta_color="inverse")
         
+        # Métricas de promociones
+        st.markdown("### 🎉 Promociones")
+        col1, col2 = st.columns(2)
+        with col1:
+            st.metric("🎁 Total", stats_promociones['total'])
+        with col2:
+            st.metric("🔥 Vigentes", stats_promociones['vigentes'])
+        
         st.markdown("---")
         
         # ----------------------------
         # Navegación
         # ----------------------------
         st.markdown("### 🧭 Navegación")
+        
+        # Separadores para mejor organización
+        st.markdown("#### 📦 Inventario")
         menu_options = {
             "📋 Dashboard de Inventario": "dashboard",
             "🔎 Buscar Producto": "buscar",
@@ -57,12 +70,25 @@ def mostrar_sidebar(display_name):
             "✏️ Actualizar Producto": "actualizar", 
             "🗑️ Eliminar Producto": "eliminar",
             "📊 Reportes": "reportes",
+        }
+        
+        st.markdown("#### 📦 Movimientos")
+        menu_options.update({
             "📦 Dashboard de Movimientos": "movimientos_dashboard",
             "🔍 Buscar Movimiento": "buscar_movimiento",
             "➕ Registrar Movimiento": "registrar_movimiento",
             "✏️ Actualizar Movimiento": "actualizar_movimiento",
             "🗑️ Eliminar Movimiento": "eliminar_movimiento"
-        }
+        })
+        
+        st.markdown("#### 🎉 Promociones")
+        menu_options.update({
+            "🎁 Dashboard de Promociones": "promociones_dashboard",
+            "➕ Registrar Promoción": "registrar_promocion",
+            "🔍 Buscar Promoción": "buscar_promocion",
+            "✏️ Actualizar Promoción": "actualizar_promocion",
+            "🗑️ Eliminar Promoción": "eliminar_promocion"
+        })
         
         opcion = st.radio("", list(menu_options.keys()), key="menu_radio")
         opcion_key = menu_options[opcion]
