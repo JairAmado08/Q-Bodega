@@ -1,5 +1,5 @@
 """
-Vista del Sidebar
+Vista del Sidebar con separadores de sección
 """
 import streamlit as st
 from auth import logout_user
@@ -57,40 +57,92 @@ def mostrar_sidebar(display_name):
         st.markdown("---")
         
         # ----------------------------
-        # Navegación
+        # Navegación con Secciones
         # ----------------------------
         st.markdown("### 🧭 Navegación")
         
-        # Separadores para mejor organización
-        st.markdown("#### 📦 Inventario")
+        # Usar expanders para organizar por sección
+        with st.expander("📦 **Inventario**", expanded=False):
+            opcion_inventario = st.radio(
+                "Opciones de Inventario",
+                [
+                    "📋 Dashboard de Inventario",
+                    "🔎 Buscar Producto",
+                    "➕ Registrar Producto",
+                    "✏️ Actualizar Producto",
+                    "🗑️ Eliminar Producto",
+                    "📊 Reportes"
+                ],
+                key="radio_inventario",
+                label_visibility="collapsed"
+            )
+        
+        with st.expander("📦 **Movimientos**", expanded=False):
+            opcion_movimientos = st.radio(
+                "Opciones de Movimientos",
+                [
+                    "📦 Dashboard de Movimientos",
+                    "🔍 Buscar Movimiento",
+                    "➕ Registrar Movimiento",
+                    "✏️ Actualizar Movimiento",
+                    "🗑️ Eliminar Movimiento"
+                ],
+                key="radio_movimientos",
+                label_visibility="collapsed"
+            )
+        
+        with st.expander("🎉 **Promociones**", expanded=True):
+            opcion_promociones = st.radio(
+                "Opciones de Promociones",
+                [
+                    "🎁 Dashboard de Promociones",
+                    "➕ Registrar Promoción",
+                    "🔍 Buscar Promoción",
+                    "✏️ Actualizar Promoción",
+                    "🗑️ Eliminar Promoción"
+                ],
+                key="radio_promociones",
+                label_visibility="collapsed"
+            )
+        
+        # Mapear las opciones a las claves
         menu_options = {
+            # Inventario
             "📋 Dashboard de Inventario": "dashboard",
             "🔎 Buscar Producto": "buscar",
             "➕ Registrar Producto": "registrar",
             "✏️ Actualizar Producto": "actualizar", 
             "🗑️ Eliminar Producto": "eliminar",
             "📊 Reportes": "reportes",
-        }
-        
-        st.markdown("#### 📦 Movimientos")
-        menu_options.update({
+            # Movimientos
             "📦 Dashboard de Movimientos": "movimientos_dashboard",
             "🔍 Buscar Movimiento": "buscar_movimiento",
             "➕ Registrar Movimiento": "registrar_movimiento",
             "✏️ Actualizar Movimiento": "actualizar_movimiento",
-            "🗑️ Eliminar Movimiento": "eliminar_movimiento"
-        })
-        
-        st.markdown("#### 🎉 Promociones")
-        menu_options.update({
+            "🗑️ Eliminar Movimiento": "eliminar_movimiento",
+            # Promociones
             "🎁 Dashboard de Promociones": "promociones_dashboard",
             "➕ Registrar Promoción": "registrar_promocion",
             "🔍 Buscar Promoción": "buscar_promocion",
             "✏️ Actualizar Promoción": "actualizar_promocion",
             "🗑️ Eliminar Promoción": "eliminar_promocion"
-        })
+        }
         
-        opcion = st.radio("", list(menu_options.keys()), key="menu_radio")
-        opcion_key = menu_options[opcion]
+        # Determinar qué opción fue seleccionada
+        # Streamlit guarda el estado de cada radio button
+        opcion_seleccionada = None
+        
+        if 'radio_inventario' in st.session_state:
+            opcion_seleccionada = st.session_state.radio_inventario
+        if 'radio_movimientos' in st.session_state:
+            opcion_seleccionada = st.session_state.radio_movimientos
+        if 'radio_promociones' in st.session_state:
+            opcion_seleccionada = st.session_state.radio_promociones
+        
+        # Por defecto mostrar dashboard de promociones
+        if opcion_seleccionada is None:
+            opcion_seleccionada = "🎁 Dashboard de Promociones"
+        
+        opcion_key = menu_options.get(opcion_seleccionada, "promociones_dashboard")
         
         return opcion_key
