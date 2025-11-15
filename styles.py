@@ -1,6 +1,5 @@
 """
 Estilos CSS para la aplicación Q'Bodega
-Archivo: styles.py
 """
 
 def get_custom_css():
