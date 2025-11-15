@@ -130,14 +130,16 @@ def mostrar_sidebar(display_name):
         
         # Determinar qué opción fue seleccionada
         # Streamlit guarda el estado de cada radio button
-        opcion_seleccionada = None
-        
-        if 'radio_inventario' in st.session_state:
+        # Determinar qué radio fue modificado
+        if st.session_state.get("radio_inventario") in menu_options:
             opcion_seleccionada = st.session_state.radio_inventario
-        if 'radio_movimientos' in st.session_state:
+        elif st.session_state.get("radio_movimientos") in menu_options:
             opcion_seleccionada = st.session_state.radio_movimientos
-        if 'radio_promociones' in st.session_state:
+        elif st.session_state.get("radio_promociones") in menu_options:
             opcion_seleccionada = st.session_state.radio_promociones
+        else:
+            opcion_seleccionada = "🎁 Dashboard de Promociones"
+
         
         # Por defecto mostrar dashboard de promociones
         if opcion_seleccionada is None:
