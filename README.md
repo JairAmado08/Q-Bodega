@@ -75,7 +75,7 @@ Satisfacción del cliente: Lograr que el bodeguero perciba una mejora significat
   - Se añadió un historial de movimientos junto a su respectivo dashboard.
 
 - **v3.0 (Noviembre 14 de 2025)**  
-  - Se estructuró el proyecto.
+  - Se estructuró el proyecto para lograr 
 
 
 --- 
