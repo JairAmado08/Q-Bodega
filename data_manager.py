@@ -18,7 +18,7 @@ def inicializar_inventario():
             ["P003", "Leche Gloria tarro", "Lácteos y derivados", 18, 4.80, "2024-01-17"],
             ["P004", "Pan francés (unidad)", "Panadería y repostería", 50, 0.40, "2024-01-18"],
             ["P005", "Atún Florida 170g", "Enlatados y conservas", 2, 6.00, "2024-01-19"],
-            ["P006", "Cerveza Pilsen Callao 630 ml", "Bebidas", 2, 6.00, "2025-11-08"]
+            ["P006", "Cerveza Pilsen Callao 630 ml", "Bebidas", 2, 6.50, "2025-11-08"]
         ]
         
         for ejemplo in ejemplos:
