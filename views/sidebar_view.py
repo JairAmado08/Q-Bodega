@@ -7,13 +7,31 @@ from ui_components import mostrar_user_info, mostrar_logo
 from inventario_crud import obtener_estadisticas
 from promociones_crud import obtener_estadisticas_promociones
 
+# --- CLASE DE BOTÓN CON HIGHLIGHT ---
+def nav_button(label, key_value):
+    """Crea un botón de navegación con highlight automático"""
+    
+    is_active = st.session_state.menu_principal == key_value
+
+    estilo = """
+        background-color:#4CAF50; color:white; font-weight:bold;
+        border-radius:8px; padding:8px; width:100%;
+    """ if is_active else """
+        width:100%; padding:8px; border-radius:8px;
+    """
+
+    if st.button(label, use_container_width=True, key=label, help=key_value, 
+                 type="secondary" if not is_active else "primary"):
+        st.session_state.menu_principal = key_value
+
+
 def mostrar_sidebar(display_name):
 
     with st.sidebar:
-        # Usuario
+
         mostrar_user_info(display_name)
 
-        # Cerrar sesión
+        # Logout
         if st.button("🚪 Cerrar Sesión", use_container_width=True):
             logout_user()
 
@@ -32,7 +50,7 @@ def mostrar_sidebar(display_name):
             st.metric("💰 Valor Total", f"S/{valor_total:,.2f}")
         with col2:
             st.metric("📈 Stock Total", total_cant)
-            st.metric("⚠️ Bajo Stock", bajo_stock, delta_color="inverse")
+            st.metric("⚠️ Bajo Stock", bajo_stock)
 
         st.markdown("### 🎉 Promociones")
         col1, col2 = st.columns(2)
@@ -44,54 +62,48 @@ def mostrar_sidebar(display_name):
         st.markdown("---")
         st.markdown("### 🧭 Navegación")
 
-        # ===========================
-        # SISTEMA ESTABLE DE NAVEGACIÓN
-        # ===========================
-
-        # Si no existe, inicializar menú
+        # Init state
         if "menu_principal" not in st.session_state:
             st.session_state.menu_principal = "promociones_dashboard"
 
-        # --- Inventario ---
+        # ===========================
+        # INVENTARIO
+        # ===========================
         with st.expander("📦 Inventario", expanded=False):
-            if st.button("📋 Dashboard de Inventario"):
-                st.session_state.menu_principal = "dashboard"
-            if st.button("🔎 Buscar Producto"):
-                st.session_state.menu_principal = "buscar"
-            if st.button("➕ Registrar Producto"):
-                st.session_state.menu_principal = "registrar"
-            if st.button("✏️ Actualizar Producto"):
-                st.session_state.menu_principal = "actualizar"
-            if st.button("🗑️ Eliminar Producto"):
-                st.session_state.menu_principal = "eliminar"
-            if st.button("📊 Reportes"):
-                st.session_state.menu_principal = "reportes"
+            colA, colB = st.columns(2)
+            with colA:
+                nav_button("📋 Dashboard", "dashboard")
+                nav_button("➕ Registrar", "registrar")
+                nav_button("✏️ Actualizar", "actualizar")
+            with colB:
+                nav_button("🔎 Buscar", "buscar")
+                nav_button("🗑️ Eliminar", "eliminar")
+                nav_button("📊 Reportes", "reportes")
 
-        # --- Movimientos ---
-        with st.expander("📦 Movimientos", expanded=False):
-            if st.button("📦 Dashboard de Movimientos"):
-                st.session_state.menu_principal = "movimientos_dashboard"
-            if st.button("🔍 Buscar Movimiento"):
-                st.session_state.menu_principal = "buscar_movimiento"
-            if st.button("➕ Registrar Movimiento"):
-                st.session_state.menu_principal = "registrar_movimiento"
-            if st.button("✏️ Actualizar Movimiento"):
-                st.session_state.menu_principal = "actualizar_movimiento"
-            if st.button("🗑️ Eliminar Movimiento"):
-                st.session_state.menu_principal = "eliminar_movimiento"
+        # ===========================
+        # MOVIMIENTOS
+        # ===========================
+        with st.expander("🔄 Movimientos", expanded=False):
+            colA, colB = st.columns(2)
+            with colA:
+                nav_button("📦 Dashboard", "movimientos_dashboard")
+                nav_button("➕ Registrar", "registrar_movimiento")
+                nav_button("✏️ Editar", "actualizar_movimiento")
+            with colB:
+                nav_button("🔍 Buscar", "buscar_movimiento")
+                nav_button("🗑️ Eliminar", "eliminar_movimiento")
 
-        # --- Promociones ---
+        # ===========================
+        # PROMOCIONES
+        # ===========================
         with st.expander("🎉 Promociones", expanded=True):
-            if st.button("🎁 Dashboard de Promociones"):
-                st.session_state.menu_principal = "promociones_dashboard"
-            if st.button("➕ Registrar Promoción"):
-                st.session_state.menu_principal = "registrar_promocion"
-            if st.button("🔍 Buscar Promoción"):
-                st.session_state.menu_principal = "buscar_promocion"
-            if st.button("✏️ Actualizar Promoción"):
-                st.session_state.menu_principal = "actualizar_promocion"
-            if st.button("🗑️ Eliminar Promoción"):
-                st.session_state.menu_principal = "eliminar_promocion"
+            colA, colB = st.columns(2)
+            with colA:
+                nav_button("🎁 Dashboard", "promociones_dashboard")
+                nav_button("➕ Registrar", "registrar_promocion")
+                nav_button("✏️ Editar", "actualizar_promocion")
+            with colB:
+                nav_button("🔍 Buscar", "buscar_promocion")
+                nav_button("🗑️ Eliminar", "eliminar_promocion")
 
-        # Retornar la opción final seleccionada
         return st.session_state.menu_principal
