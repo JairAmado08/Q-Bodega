@@ -81,9 +81,9 @@ Satisfacción del cliente: Lograr que el bodeguero perciba una mejora significat
   - Se estandarizaron nombres, rutas y archivos para una mejor consistencia en el desarrollo.
   - Se preparó la base del proyecto para futuras integraciones como reportes avanzados, nuevos módulos, etc.
     
- - **v3.5 (Noviembre 15 de 2025)**  
-  - Sidebar rediseñado completamente para ofrecer una estética más moderna, con mejor organización visual.
-  - Se incorporaron íconos más intuitivos, espaciado optimizado y secciones resaltadas con highlight para mejorar la experiencia de navegación.
+ - **v3.5 (Noviembre 15 de 2025)**
+   - Sidebar rediseñado completamente para ofrecer una estética más moderna, con mejor organización visual.
+   - Se incorporaron íconos más intuitivos, espaciado optimizado y secciones resaltadas con highlight para mejorar la experiencia de navegación.
 
 --- 
 ## Estructura del Proyecto
