@@ -1,5 +1,5 @@
 """
-Vista del Sidebar con separadores de sección
+Vista del Sidebar
 """
 import streamlit as st
 from auth import logout_user
@@ -57,103 +57,43 @@ def mostrar_sidebar(display_name):
         st.markdown("---")
         
         # ----------------------------
-        # Navegación con Secciones
+        # Navegación
         # ----------------------------
         st.markdown("### 🧭 Navegación")
         
-        # Usar expanders para organizar por sección
-        with st.expander("📦 **Inventario**", expanded=False):
-            opcion_inventario = st.radio(
-                "Opciones de Inventario",
-                [
-                    "📋 Dashboard de Inventario",
-                    "🔎 Buscar Producto",
-                    "➕ Registrar Producto",
-                    "✏️ Actualizar Producto",
-                    "🗑️ Eliminar Producto",
-                    "📊 Reportes"
-                ],
-                key="radio_inventario",
-                label_visibility="collapsed"
-            )
+        # Crear el diccionario de opciones completo
+        menu_options = {}
         
-        with st.expander("📦 **Movimientos**", expanded=False):
-            opcion_movimientos = st.radio(
-                "Opciones de Movimientos",
-                [
-                    "📦 Dashboard de Movimientos",
-                    "🔍 Buscar Movimiento",
-                    "➕ Registrar Movimiento",
-                    "✏️ Actualizar Movimiento",
-                    "🗑️ Eliminar Movimiento"
-                ],
-                key="radio_movimientos",
-                label_visibility="collapsed"
-            )
-        
-        with st.expander("🎉 **Promociones**", expanded=True):
-            opcion_promociones = st.radio(
-                "Opciones de Promociones",
-                [
-                    "🎁 Dashboard de Promociones",
-                    "➕ Registrar Promoción",
-                    "🔍 Buscar Promoción",
-                    "✏️ Actualizar Promoción",
-                    "🗑️ Eliminar Promoción"
-                ],
-                key="radio_promociones",
-                label_visibility="collapsed"
-            )
-        
-        # Mapear las opciones a las claves
-        menu_options = {
-            # Inventario
+        # INVENTARIO
+        menu_options.update({
             "📋 Dashboard de Inventario": "dashboard",
             "🔎 Buscar Producto": "buscar",
             "➕ Registrar Producto": "registrar",
             "✏️ Actualizar Producto": "actualizar", 
             "🗑️ Eliminar Producto": "eliminar",
             "📊 Reportes": "reportes",
-            # Movimientos
+        })
+        
+        # MOVIMIENTOS
+        menu_options.update({
             "📦 Dashboard de Movimientos": "movimientos_dashboard",
             "🔍 Buscar Movimiento": "buscar_movimiento",
             "➕ Registrar Movimiento": "registrar_movimiento",
             "✏️ Actualizar Movimiento": "actualizar_movimiento",
-            "🗑️ Eliminar Movimiento": "eliminar_movimiento",
-            # Promociones
+            "🗑️ Eliminar Movimiento": "eliminar_movimiento"
+        })
+        
+        # PROMOCIONES
+        menu_options.update({
             "🎁 Dashboard de Promociones": "promociones_dashboard",
             "➕ Registrar Promoción": "registrar_promocion",
             "🔍 Buscar Promoción": "buscar_promocion",
             "✏️ Actualizar Promoción": "actualizar_promocion",
             "🗑️ Eliminar Promoción": "eliminar_promocion"
-        }
+        })
         
-        # ======================================
-        # SELECCIÓN CORRECTA DE MENÚ
-        # ======================================
-        
-        # Inicializar opción actual si no existe
-        if "opcion_actual" not in st.session_state:
-            st.session_state["opcion_actual"] = "🎁 Dashboard de Promociones"
-        
-        # Leer los radios
-        op_inv = st.session_state.get("radio_inventario")
-        op_mov = st.session_state.get("radio_movimientos")
-        op_pro = st.session_state.get("radio_promociones")
-        
-        # Si alguno cambió, actualizar la opción actual
-        if op_inv and op_inv != st.session_state["opcion_actual"]:
-            st.session_state["opcion_actual"] = op_inv
-        
-        elif op_mov and op_mov != st.session_state["opcion_actual"]:
-            st.session_state["opcion_actual"] = op_mov
-        
-        elif op_pro and op_pro != st.session_state["opcion_actual"]:
-            st.session_state["opcion_actual"] = op_pro
-        
-        # Determinar clave final
-        opcion_seleccionada = st.session_state["opcion_actual"]
-        opcion_key = menu_options.get(opcion_seleccionada, "promociones_dashboard")
+        # Radio button sin separadores visuales
+        opcion = st.radio("", list(menu_options.keys()), key="menu_radio")
+        opcion_key = menu_options[opcion]
         
         return opcion_key
-
