@@ -73,3 +73,48 @@ Satisfacción del cliente: Lograr que el bodeguero perciba una mejora significat
   - Se añadió un login y un cierre de sesión.
   - Se añadió el CRUD para los movimientos de inventario.
   - Se añadió un historial de movimientos junto a su respectivo dashboard.
+
+- **v3.0 (Noviembre 14 de 2025)**  
+  - Se estructuró el proyecto.
+  - qbodega/
+
+
+## Estructura del Proyecto
+
+│
+├── app.py                          # Aplicación principal
+│
+├── config.py                       # Configuración y constantes
+├── styles.py                       # Estilos CSS
+│
+├── auth.py                         # Módulo de autenticación
+├── data_manager.py                 # Gestión e inicialización de datos
+│
+├── inventario_crud.py              # Operaciones CRUD de inventario
+├── movimientos_crud.py             # Operaciones CRUD de movimientos
+│
+├── ui_components.py                # Componentes UI reutilizables
+│
+└── views/                          # Vistas de la aplicación
+    ├── __init__.py
+    ├── login_view.py               # Vista de login
+    ├── sidebar_view.py             # Vista del sidebar
+    ├── content_view.py             # Router de contenido
+    │
+    ├── inventario/                 # Vistas de inventario
+    │   ├── init.py
+    │   ├── dashboard_view.py       # Dashboard principal
+    │   ├── buscar_view.py          # Búsqueda de productos
+    │   ├── registrar_view.py       # Registro de productos
+    │   ├── actualizar_view.py      # Actualización de productos
+    │   ├── eliminar_view.py        # Eliminación de productos
+    │   └── reportes_view.py        # Reportes y análisis
+    │
+    └── movimientos/                # Vistas de movimientos
+        ├── init.py
+        ├── movimientos_dashboard_view.py      # Dashboard principal
+        ├── buscar_movimiento_view.py          # Búsqueda de movimientos
+        ├── registrar_movimiento_view.py       # Registro de movimientos
+        ├── actualizar_movimiento_view.py      # Actualización de movimientos
+        └── eliminar_movimiento_view.py        # Eliminación de movimientos
+  
