@@ -80,6 +80,8 @@ Satisfacción del cliente: Lograr que el bodeguero perciba una mejora significat
 
 --- 
 ## Estructura del Proyecto
+
+---
 qbodega/
 │
 ├── app.py                          # Aplicación principal
@@ -117,3 +119,5 @@ qbodega/
         ├── registrar_movimiento_view.py    # Registro de movimientos
         ├── actualizar_movimiento_view.py   # Actualización de movimientos
         └── eliminar_movimiento_view.py     # Eliminación de movimientos
+
+---
