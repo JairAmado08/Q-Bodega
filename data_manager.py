@@ -58,6 +58,37 @@ def inicializar_movimientos():
                 ignore_index=True
             )
 
+def inicializar_promociones():
+    """Inicializa el DataFrame de promociones con datos de ejemplo"""
+    if "promociones" not in st.session_state:
+        st.session_state.promociones = pd.DataFrame(
+            columns=["ID", "Nombre", "Tipo", "Valor", "Producto_ID", "Producto_Nombre",
+                    "Fecha_Inicio", "Fecha_Fin", "Estado"]
+        )
+        
+        # Datos de ejemplo de promociones
+        promociones_ejemplo = [
+            ["PR001", "2x1 en Gaseosas", "2x1", 0, "P001", "Inca Kola 1.5L", 
+             "2025-11-01", "2025-11-30", "activa"],
+            ["PR002", "20% OFF en Lácteos", "porcentaje", 20, "P003", "Leche Gloria tarro", 
+             "2025-11-10", "2025-11-25", "activa"],
+            ["PR003", "Descuento S/2 en Pan", "monto fijo", 0.20, "P004", "Pan francés (unidad)", 
+             "2025-11-15", "2025-11-20", "activa"],
+            ["PR004", "Combo Arroz", "porcentaje", 15, "P002", "Arroz Costeño 1kg", 
+             "2025-10-01", "2025-10-31", "inactiva"]
+        ]
+        
+        for promocion in promociones_ejemplo:
+            nueva_promo = pd.DataFrame(
+                [promocion], 
+                columns=["ID", "Nombre", "Tipo", "Valor", "Producto_ID", "Producto_Nombre",
+                        "Fecha_Inicio", "Fecha_Fin", "Estado"]
+            )
+            st.session_state.promociones = pd.concat(
+                [st.session_state.promociones, nueva_promo], 
+                ignore_index=True
+            )
+
 def get_inventario():
     """Retorna el DataFrame de inventario"""
     return st.session_state.inventario
@@ -66,6 +97,10 @@ def get_movimientos():
     """Retorna el DataFrame de movimientos"""
     return st.session_state.movimientos
 
+def get_promociones():
+    """Retorna el DataFrame de promociones"""
+    return st.session_state.promociones
+
 def actualizar_inventario(df):
     """Actualiza el DataFrame de inventario"""
     st.session_state.inventario = df
@@ -73,3 +108,7 @@ def actualizar_inventario(df):
 def actualizar_movimientos(df):
     """Actualiza el DataFrame de movimientos"""
     st.session_state.movimientos = df
+
+def actualizar_promociones(df):
+    """Actualiza el DataFrame de promociones"""
+    st.session_state.promociones = df
