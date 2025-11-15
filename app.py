@@ -12,7 +12,9 @@ try:
         inicializar_sesion, is_logged_in, get_display_name, 
         logout_user, get_current_user
     )
-    from data_manager import inicializar_inventario, inicializar_movimientos
+    from data_manager import (
+        inicializar_inventario, inicializar_movimientos, inicializar_promociones
+    )
     from ui_components import mostrar_header, mostrar_user_info, mostrar_logo, mostrar_footer
 except ImportError as e:
     st.error(f"❌ Error al importar módulos: {e}")
@@ -25,6 +27,7 @@ except ImportError as e:
     - ui_components.py
     - inventario_crud.py
     - movimientos_crud.py
+    - promociones_crud.py
     """)
     st.stop()
 
@@ -50,6 +53,7 @@ st.markdown(get_custom_css(), unsafe_allow_html=True)
 inicializar_sesion()
 inicializar_inventario()
 inicializar_movimientos()
+inicializar_promociones()  # ← NUEVO: Inicializar promociones
 
 # ----------------------------
 # Sistema de Autenticación
