@@ -101,7 +101,7 @@ qbodega/
     ├── content_view.py             # Router de contenido
     │
     ├── inventario/                 # Vistas de inventario
-    │   ├── init.py
+    │   ├── __init__.py
     │   ├── dashboard_view.py       # Dashboard principal
     │   ├── buscar_view.py          # Búsqueda de productos
     │   ├── registrar_view.py       # Registro de productos
@@ -110,10 +110,9 @@ qbodega/
     │   └── reportes_view.py        # Reportes y análisis
     │
     └── movimientos/                # Vistas de movimientos
-        ├── init.py
-        ├── movimientos_dashboard_view.py      # Dashboard principal
-        ├── buscar_movimiento_view.py          # Búsqueda de movimientos
-        ├── registrar_movimiento_view.py       # Registro de movimientos
-        ├── actualizar_movimiento_view.py      # Actualización de movimientos
-        └── eliminar_movimiento_view.py        # Eliminación de movimientos
-  
+        ├── __init__.py
+        ├── movimientos_dashboard_view.py   # Dashboard principal
+        ├── buscar_movimiento_view.py       # Búsqueda de movimientos
+        ├── registrar_movimiento_view.py    # Registro de movimientos
+        ├── actualizar_movimiento_view.py   # Actualización de movimientos
+        └── eliminar_movimiento_view.py     # Eliminación de movimientos
