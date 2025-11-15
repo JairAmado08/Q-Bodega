@@ -2,6 +2,11 @@
 Q'Bodega - Sistema de Gestión de Inventario
 Aplicación principal
 """
+from styles import get_custom_css
+
+# Aplicar estilos
+st.markdown(get_custom_css(), unsafe_allow_html=True)
+
 import streamlit as st
 
 # Importar módulos
