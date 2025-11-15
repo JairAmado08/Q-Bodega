@@ -120,7 +120,7 @@ qbodega/
     │   └── reportes_view.py        # Reportes y análisis
     │
     └── movimientos/                # Vistas de movimientos
-        ├── __init__.py
+        ├── init.py
         ├── movimientos_dashboard_view.py   # Dashboard principal
         ├── buscar_movimiento_view.py       # Búsqueda de movimientos
         ├── registrar_movimiento_view.py    # Registro de movimientos
