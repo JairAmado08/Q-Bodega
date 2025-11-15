@@ -78,6 +78,7 @@ Satisfacción del cliente: Lograr que el bodeguero perciba una mejora significat
   - Se estructuró el proyecto.
 
 
+--- 
 ## Estructura del Proyecto
 qbodega/
 │
