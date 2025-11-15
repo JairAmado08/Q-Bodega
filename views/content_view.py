@@ -11,6 +11,11 @@ from views.movimientos import (
     registrar_movimiento_view, actualizar_movimiento_view,
     eliminar_movimiento_view
 )
+from views.promociones import (
+    promociones_dashboard_view, registrar_promocion_view,
+    buscar_promocion_view, actualizar_promocion_view,
+    eliminar_promocion_view
+)
 
 def mostrar_contenido(opcion_key):
     """
@@ -44,3 +49,15 @@ def mostrar_contenido(opcion_key):
         actualizar_movimiento_view.mostrar()
     elif opcion_key == "eliminar_movimiento":
         eliminar_movimiento_view.mostrar()
+    
+    # Vistas de promociones
+    elif opcion_key == "promociones_dashboard":
+        promociones_dashboard_view.mostrar()
+    elif opcion_key == "registrar_promocion":
+        registrar_promocion_view.mostrar()
+    elif opcion_key == "buscar_promocion":
+        buscar_promocion_view.mostrar()
+    elif opcion_key == "actualizar_promocion":
+        actualizar_promocion_view.mostrar()
+    elif opcion_key == "eliminar_promocion":
+        eliminar_promocion_view.mostrar()
