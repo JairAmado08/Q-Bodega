@@ -76,7 +76,9 @@ def inicializar_promociones():
             ["PR003", "Descuento S/2 en Pan", "monto fijo", 0.20, "P004", "Pan francés (unidad)", 
              "2025-11-15", "2025-11-20", "activa"],
             ["PR004", "Combo Arroz", "porcentaje", 15, "P002", "Arroz Costeño 1kg", 
-             "2025-10-01", "2025-10-31", "inactiva"]
+             "2025-10-01", "2025-10-31", "inactiva"],
+            ["PR005", "¡Bien Heladas!", "porcentaje", 30, "P006", "Cerveza Pilsen Callao 630 ml", 
+             "2025-11-08", "2025-12-20", "activa"]
         ]
         
         for promocion in promociones_ejemplo:
