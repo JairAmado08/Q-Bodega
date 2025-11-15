@@ -15,7 +15,7 @@ APP_CONFIG = {
 APP_INFO = {
     "name": "Q'Bodega",
     "subtitle": "Control total, sin complicaciones.",
-    "version": "2.5",
+    "version": "3.5",
     "developer": "Soft Solutions"
 }
 
