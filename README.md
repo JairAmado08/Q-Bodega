@@ -5,7 +5,7 @@
 - Alfaro Salazar, Facundo Ismael
 - Amado Diaz, Jair Renato
 - Gonzales Pacheco, Felipe Andre
-- Manrique Marcelo, Israel
+- Manrique Marcelo, Israel Gonzalo
 
 
 Este proyecto es un prototipo de sistema de gestión de inventario para bodegas pequeñas y tradicionales, cuyo objetivo es digitalizar el control de productos, entradas y salidas, mejorando la eficiencia y la toma de decisiones.
