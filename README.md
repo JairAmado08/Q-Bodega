@@ -101,13 +101,13 @@ qbodega/
 ├── ui_components.py                # Componentes UI reutilizables
 │
 └── views/                          # Vistas de la aplicación
-    ├── __init__.py
+    ├── init.py
     ├── login_view.py               # Vista de login
     ├── sidebar_view.py             # Vista del sidebar
     ├── content_view.py             # Router de contenido
     │
     ├── inventario/                 # Vistas de inventario
-    │   ├── __init__.py
+    │   ├── init.py
     │   ├── dashboard_view.py       # Dashboard principal
     │   ├── buscar_view.py          # Búsqueda de productos
     │   ├── registrar_view.py       # Registro de productos
