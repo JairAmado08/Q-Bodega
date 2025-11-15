@@ -75,7 +75,7 @@ def actualizar_stock_producto(producto_id, cantidad_cambio):
         )
         st.session_state.inventario.loc[idx[0], "Cantidad"] = nueva_cantidad
 
-def obtener_estadisticas():
+def obtener_estadisticas_movimientos():
     """
     Obtiene estadísticas generales del inventario
     
