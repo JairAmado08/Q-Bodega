@@ -76,11 +76,10 @@ Satisfacción del cliente: Lograr que el bodeguero perciba una mejora significat
 
 - **v3.0 (Noviembre 14 de 2025)**  
   - Se estructuró el proyecto.
-  - qbodega/
 
 
 ## Estructura del Proyecto
-
+qbodega/
 │
 ├── app.py                          # Aplicación principal
 │
