@@ -1,11 +1,12 @@
 """
-Vista del Sidebar
+Vista del Sidebar con separadores de sección
 """
 import streamlit as st
 from auth import logout_user
 from ui_components import mostrar_user_info, mostrar_logo
 from inventario_crud import obtener_estadisticas
 from promociones_crud import obtener_estadisticas_promociones
+
 
 def mostrar_sidebar(display_name):
     """
@@ -17,26 +18,34 @@ def mostrar_sidebar(display_name):
     Returns:
         str: Clave de la opción seleccionada
     """
+
+    # ----------------------------
+    # Inicializar estado único de navegación
+    # ----------------------------
+    if "opcion_seleccionada" not in st.session_state:
+        st.session_state.opcion_seleccionada = "promociones_dashboard"
+
     with st.sidebar:
+
         # Información del usuario logueado
         mostrar_user_info(display_name)
-        
+
         # Botón de cerrar sesión
         if st.button("🚪 Cerrar Sesión", use_container_width=True):
             logout_user()
-        
+
         # Logo
         mostrar_logo()
-        
+
         # Encabezado principal
         st.markdown("## 🛠️ Panel de Control")
-        
+
         # ----------------------------
         # Métricas
         # ----------------------------
         total_productos, total_cantidad, valor_total, productos_bajo_stock = obtener_estadisticas()
         stats_promociones = obtener_estadisticas_promociones()
-        
+
         st.markdown("### 📊 Estadísticas")
         col1, col2 = st.columns(2)
         with col1:
@@ -45,55 +54,103 @@ def mostrar_sidebar(display_name):
         with col2:
             st.metric("📈 Stock Total", total_cantidad)
             st.metric("⚠️ Bajo Stock", productos_bajo_stock, delta_color="inverse")
-        
-        # Métricas de promociones
+
         st.markdown("### 🎉 Promociones")
         col1, col2 = st.columns(2)
         with col1:
             st.metric("🎁 Total", stats_promociones['total'])
         with col2:
             st.metric("🔥 Vigentes", stats_promociones['vigentes'])
-        
+
         st.markdown("---")
-        
-        # ----------------------------
-        # Navegación
-        # ----------------------------
+
+        # ---------------------------------------------------
+        # Navegación organizada por secciones con un solo estado
+        # ---------------------------------------------------
         st.markdown("### 🧭 Navegación")
-        
-        # Crear el diccionario de opciones completo
-        menu_options = {}
-        
-        # INVENTARIO
-        menu_options.update({
+
+        # Mapear las opciones a las claves
+        menu_options = {
+            # Inventario
             "📋 Dashboard de Inventario": "dashboard",
             "🔎 Buscar Producto": "buscar",
             "➕ Registrar Producto": "registrar",
-            "✏️ Actualizar Producto": "actualizar", 
+            "✏️ Actualizar Producto": "actualizar",
             "🗑️ Eliminar Producto": "eliminar",
             "📊 Reportes": "reportes",
-        })
-        
-        # MOVIMIENTOS
-        menu_options.update({
+            # Movimientos
             "📦 Dashboard de Movimientos": "movimientos_dashboard",
             "🔍 Buscar Movimiento": "buscar_movimiento",
             "➕ Registrar Movimiento": "registrar_movimiento",
             "✏️ Actualizar Movimiento": "actualizar_movimiento",
-            "🗑️ Eliminar Movimiento": "eliminar_movimiento"
-        })
-        
-        # PROMOCIONES
-        menu_options.update({
+            "🗑️ Eliminar Movimiento": "eliminar_movimiento",
+            # Promociones
             "🎁 Dashboard de Promociones": "promociones_dashboard",
             "➕ Registrar Promoción": "registrar_promocion",
             "🔍 Buscar Promoción": "buscar_promocion",
             "✏️ Actualizar Promoción": "actualizar_promocion",
             "🗑️ Eliminar Promoción": "eliminar_promocion"
-        })
-        
-        # Radio button sin separadores visuales
-        opcion = st.radio("", list(menu_options.keys()), key="menu_radio")
-        opcion_key = menu_options[opcion]
-        
-        return opcion_key
+        }
+
+        # ----------------------------
+        # Inventario
+        # ----------------------------
+        with st.expander("📦 **Inventario**", expanded=False):
+            op = st.radio(
+                "Opciones de Inventario",
+                [
+                    "📋 Dashboard de Inventario",
+                    "🔎 Buscar Producto",
+                    "➕ Registrar Producto",
+                    "✏️ Actualizar Producto",
+                    "🗑️ Eliminar Producto",
+                    "📊 Reportes"
+                ],
+                key="radio_inventario",
+                label_visibility="collapsed"
+            )
+            if op:
+                st.session_state.opcion_seleccionada = menu_options[op]
+
+        # ----------------------------
+        # Movimientos
+        # ----------------------------
+        with st.expander("📦 **Movimientos**", expanded=False):
+            op = st.radio(
+                "Opciones de Movimientos",
+                [
+                    "📦 Dashboard de Movimientos",
+                    "🔍 Buscar Movimiento",
+                    "➕ Registrar Movimiento",
+                    "✏️ Actualizar Movimiento",
+                    "🗑️ Eliminar Movimiento"
+                ],
+                key="radio_movimientos",
+                label_visibility="collapsed"
+            )
+            if op:
+                st.session_state.opcion_seleccionada = menu_options[op]
+
+        # ----------------------------
+        # Promociones
+        # ----------------------------
+        with st.expander("🎉 **Promociones**", expanded=True):
+            op = st.radio(
+                "Opciones de Promociones",
+                [
+                    "🎁 Dashboard de Promociones",
+                    "➕ Registrar Promoción",
+                    "🔍 Buscar Promoción",
+                    "✏️ Actualizar Promoción",
+                    "🗑️ Eliminar Promoción"
+                ],
+                key="radio_promociones",
+                label_visibility="collapsed"
+            )
+            if op:
+                st.session_state.opcion_seleccionada = menu_options[op]
+
+        # ----------------------------
+        # Devolver opción final estable
+        # ----------------------------
+        return st.session_state.opcion_seleccionada
