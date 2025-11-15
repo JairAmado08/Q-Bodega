@@ -1,122 +1,132 @@
 """
-Módulo CRUD para gestión de inventario
+Módulo CRUD para gestión de movimientos de inventario
 """
 import streamlit as st
 import pandas as pd
 from datetime import datetime
-from config import STOCK_BAJO
+from inventario_crud import actualizar_stock_producto, obtener_producto
 
-def registrar_producto(id_, nombre, categoria, cantidad, precio):
+def registrar_movimiento(id_mov, tipo, producto_id, cantidad, observaciones=""):
     """
-    Registra un nuevo producto en el inventario
+    Registra un nuevo movimiento de inventario
     
     Args:
-        id_: ID único del producto
-        nombre: Nombre del producto
-        categoria: Categoría del producto
-        cantidad: Cantidad inicial en stock
-        precio: Precio unitario
+        id_mov: ID único del movimiento
+        tipo: Tipo de movimiento (Entrada, Salida, Ajuste, Devolución)
+        producto_id: ID del producto
+        cantidad: Cantidad del movimiento
+        observaciones: Observaciones adicionales
+    
+    Returns:
+        bool: True si el movimiento se registró exitosamente
     """
     fecha_actual = datetime.now().strftime("%Y-%m-%d")
-    nuevo = pd.DataFrame(
-        [[id_, nombre, categoria, cantidad, precio, fecha_actual]], 
-        columns=["ID", "Nombre", "Categoría", "Cantidad", "Precio", "Fecha_Agregado"]
+    
+    # Obtener información del producto
+    producto_info = obtener_producto(producto_id)
+    
+    if producto_info is None:
+        st.error("❌ Producto no encontrado.")
+        return False
+    
+    producto_nombre = producto_info["Nombre"]
+    stock_actual = int(producto_info["Cantidad"])
+    
+    # Validar stock suficiente para salidas
+    if tipo == "Salida" and cantidad > stock_actual:
+        st.error(
+            f"❌ No hay suficiente stock. Stock actual: {stock_actual}, "
+            f"intentaste sacar: {cantidad}."
+        )
+        return False
+    
+    # Crear movimiento
+    nuevo_movimiento = pd.DataFrame(
+        [[id_mov, tipo, producto_id, producto_nombre, cantidad, fecha_actual, 
+          st.session_state.username, observaciones]],
+        columns=["ID_Movimiento", "Tipo", "Producto_ID", "Producto_Nombre", 
+                "Cantidad", "Fecha", "Usuario", "Observaciones"]
     )
-    st.session_state.inventario = pd.concat(
-        [st.session_state.inventario, nuevo], 
+    
+    st.session_state.movimientos = pd.concat(
+        [st.session_state.movimientos, nuevo_movimiento], 
         ignore_index=True
     )
+    
+    # Actualizar inventario según el tipo de movimiento
+    if tipo in ["Entrada", "Devolución"]:
+        actualizar_stock_producto(producto_id, cantidad)
+    elif tipo in ["Salida", "Ajuste"] and cantidad < 0:
+        actualizar_stock_producto(producto_id, cantidad)
+    elif tipo == "Salida":
+        actualizar_stock_producto(producto_id, -cantidad)
+    
+    return True
 
-def eliminar_producto(id_):
+def eliminar_movimiento(id_movimiento):
     """
-    Elimina un producto del inventario
+    Elimina un movimiento (sin revertir cambios de stock)
     
     Args:
-        id_: ID del producto a eliminar
+        id_movimiento: ID del movimiento a eliminar
     """
-    st.session_state.inventario = st.session_state.inventario[
-        st.session_state.inventario["ID"] != id_
+    st.session_state.movimientos = st.session_state.movimientos[
+        st.session_state.movimientos["ID_Movimiento"] != id_movimiento
     ]
 
-def actualizar_producto(id_, nombre, categoria, cantidad, precio):
+def actualizar_movimiento(id_mov, tipo, producto_id, cantidad, fecha, observaciones):
     """
-    Actualiza la información de un producto existente
+    Actualiza los datos de un movimiento
     
     Args:
-        id_: ID del producto a actualizar
-        nombre: Nuevo nombre
-        categoria: Nueva categoría
+        id_mov: ID del movimiento
+        tipo: Nuevo tipo de movimiento
+        producto_id: Nuevo ID de producto
         cantidad: Nueva cantidad
-        precio: Nuevo precio
+        fecha: Nueva fecha
+        observaciones: Nuevas observaciones
     """
-    idx = st.session_state.inventario[st.session_state.inventario["ID"] == id_].index
-    if not idx.empty:
-        st.session_state.inventario.loc[
-            idx[0], 
-            ["Nombre", "Categoría", "Cantidad", "Precio"]
-        ] = [nombre, categoria, cantidad, precio]
-
-def actualizar_stock_producto(producto_id, cantidad_cambio):
-    """
-    Actualiza el stock de un producto
-    
-    Args:
-        producto_id: ID del producto
-        cantidad_cambio: Cantidad a agregar o quitar (puede ser negativa)
-    """
-    idx = st.session_state.inventario[
-        st.session_state.inventario["ID"] == producto_id
+    idx = st.session_state.movimientos[
+        st.session_state.movimientos["ID_Movimiento"] == id_mov
     ].index
     
     if not idx.empty:
-        nueva_cantidad = max(
-            0, 
-            st.session_state.inventario.loc[idx[0], "Cantidad"] + cantidad_cambio
-        )
-        st.session_state.inventario.loc[idx[0], "Cantidad"] = nueva_cantidad
+        # Obtener nombre del producto
+        producto_info = obtener_producto(producto_id)
+        producto_nombre = producto_info["Nombre"] if producto_info is not None else "Producto no encontrado"
+        
+        st.session_state.movimientos.loc[
+            idx[0], 
+            ["Tipo", "Producto_ID", "Producto_Nombre", "Cantidad", "Fecha", "Observaciones"]
+        ] = [tipo, producto_id, producto_nombre, cantidad, fecha, observaciones]
 
 def obtener_estadisticas_movimientos():
     """
-    Obtiene estadísticas generales del inventario
+    Obtiene estadísticas de movimientos
     
     Returns:
-        tuple: (total_productos, total_cantidad, valor_total, productos_bajo_stock)
+        tuple: (total_movimientos, entradas, salidas, ajustes)
     """
-    inventario = st.session_state.inventario
+    movimientos = st.session_state.movimientos
     
-    if inventario.empty:
+    if movimientos.empty:
         return 0, 0, 0, 0
     
-    total_productos = len(inventario)
-    total_cantidad = inventario["Cantidad"].sum()
-    valor_total = (inventario["Cantidad"] * inventario["Precio"]).sum()
-    productos_bajo_stock = len(inventario[inventario["Cantidad"] < STOCK_BAJO])
+    total_movimientos = len(movimientos)
+    entradas = len(movimientos[movimientos["Tipo"] == "Entrada"])
+    salidas = len(movimientos[movimientos["Tipo"] == "Salida"])
+    ajustes = len(movimientos[movimientos["Tipo"].isin(["Ajuste", "Devolución"])])
     
-    return total_productos, total_cantidad, valor_total, productos_bajo_stock
+    return total_movimientos, entradas, salidas, ajustes
 
-def obtener_producto(producto_id):
+def movimiento_existe(id_movimiento):
     """
-    Obtiene la información de un producto específico
+    Verifica si un movimiento existe
     
     Args:
-        producto_id: ID del producto
+        id_movimiento: ID del movimiento
     
     Returns:
-        Series: Información del producto o None si no existe
+        bool: True si el movimiento existe
     """
-    inventario = st.session_state.inventario
-    producto = inventario[inventario["ID"] == producto_id]
-    
-    return producto.iloc[0] if not producto.empty else None
-
-def producto_existe(producto_id):
-    """
-    Verifica si un producto existe en el inventario
-    
-    Args:
-        producto_id: ID del producto
-    
-    Returns:
-        bool: True si el producto existe
-    """
-    return producto_id in st.session_state.inventario["ID"].values
+    return id_movimiento in st.session_state.movimientos["ID_Movimiento"].values
