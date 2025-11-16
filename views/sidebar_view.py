@@ -21,7 +21,7 @@ def mostrar_sidebar(display_name):
     
     # Inicializar estado del menú
     if "menu_principal" not in st.session_state:
-        st.session_state.menu_principal = "promociones_dashboard"
+        st.session_state.menu_principal = "inicio"  # Cambiado a "inicio"
     
     with st.sidebar:
         # Información del usuario logueado
