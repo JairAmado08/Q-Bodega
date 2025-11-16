@@ -32,6 +32,8 @@ def logout_user():
     """Cerrar sesión del usuario actual"""
     st.session_state.logged_in = False
     st.session_state.username = ""
+    # Resetear el menú al inicio
+    st.session_state.menu_principal = "inicio"
     st.rerun()
 
 def get_display_name(username):
