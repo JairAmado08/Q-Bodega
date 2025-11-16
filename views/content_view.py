@@ -2,6 +2,7 @@
 Router de contenido principal
 Decide qué vista mostrar según la opción seleccionada
 """
+from views import inicio_view
 from views.inventario import (
     dashboard_view, buscar_view, registrar_view, 
     actualizar_view, eliminar_view, reportes_view
@@ -24,8 +25,12 @@ def mostrar_contenido(opcion_key):
     Args:
         opcion_key: Clave de la opción seleccionada
     """
+    # Vista de inicio
+    if opcion_key == "inicio":
+        inicio_view.mostrar()
+    
     # Vistas de inventario
-    if opcion_key == "dashboard":
+    elif opcion_key == "dashboard":
         dashboard_view.mostrar()
     elif opcion_key == "buscar":
         buscar_view.mostrar()
