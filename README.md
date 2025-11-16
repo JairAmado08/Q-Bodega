@@ -92,6 +92,9 @@ Satisfacción del cliente: Lograr que el bodeguero perciba una mejora significat
 ```
 qbodega/
 │
+├── LICENSE                         # Licencia
+├── README.md                       # README del proyecto
+│
 ├── app.py                          # Aplicación principal
 │
 ├── config.py                       # Configuración y constantes
@@ -102,8 +105,10 @@ qbodega/
 │
 ├── inventario_crud.py              # Operaciones CRUD de inventario
 ├── movimientos_crud.py             # Operaciones CRUD de movimientos
+├── promociones_crud.py             # Operaciones CRUD de promociones
 │
 ├── ui_components.py                # Componentes UI reutilizables
+├── utils.py                        # Utilidades del Sistema (ID)
 │
 └── views/                          # Vistas de la aplicación
     ├── init.py
@@ -120,12 +125,21 @@ qbodega/
     │   ├── eliminar_view.py        # Eliminación de productos
     │   └── reportes_view.py        # Reportes y análisis
     │
-    └── movimientos/                # Vistas de movimientos
-        ├── init.py
-        ├── movimientos_dashboard_view.py   # Dashboard principal
-        ├── buscar_movimiento_view.py       # Búsqueda de movimientos
-        ├── registrar_movimiento_view.py    # Registro de movimientos
-        ├── actualizar_movimiento_view.py   # Actualización de movimientos
-        └── eliminar_movimiento_view.py     # Eliminación de movimientos
+    ├── movimientos/                # Vistas de movimientos
+    │   ├── init.py
+    │   ├── movimientos_dashboard_view.py   # Dashboard principal
+    │   ├── buscar_movimiento_view.py       # Búsqueda de movimientos
+    │   ├── registrar_movimiento_view.py    # Registro de movimientos
+    │   ├── actualizar_movimiento_view.py   # Actualización de movimientos
+    │   └── eliminar_movimiento_view.py     # Eliminación de movimientos
+    │
+    ├── promociones/
+    │   ├── init.py
+    │   ├── promociones_dashboard_view.py   # Dashboard principal
+    │   ├── buscar_promocion_view.py        # Búsqueda de promociones
+    │   ├── registrar_promocion_view.py     # Registro de promociones
+    │   ├── actualizar_promocion_view.py    # Actualización de promociones
+    │   └── eliminar_promocion_view.py      # Eliminación de promociones
+    └── ventas/
 
 ```
