@@ -149,7 +149,7 @@ def mostrar_card_promocion(promo, vigente=False):
     
     # Verificar si está por vencer (menos de 3 días)
     fecha_fin = datetime.strptime(promo['Fecha_Fin'], "%Y-%m-%d")
-    dias_restantes = (fecha_fin - datetime.now()).days
+    dias_restantes = (fecha_fin - date.now()).days
     
     alerta_vencimiento = ""
     if vigente and dias_restantes <= 3:
