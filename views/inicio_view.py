@@ -164,16 +164,5 @@ def mostrar():
     # ----------------------------
     # Footer con información del sistema
     # ----------------------------
-    st.markdown(f"""
-    <div style="text-align: center; color: #666; padding: 2rem; border-top: 1px solid #e0e0e0; margin-top: 2rem;">
-        <p style="font-size: 1.1rem; margin-bottom: 0.5rem;">
-            <strong>📦 {APP_INFO['name']}</strong> | {APP_INFO['subtitle']}
-        </p>
-        <p style="font-size: 0.9rem; color: #888;">
-            Versión {APP_INFO['version']} | Desarrollado por {APP_INFO['developer']}
-        </p>
-        <p style="font-size: 0.85rem; color: #aaa; margin-top: 1rem;">
-            © 2025 SoftSolutions. Todos los derechos reservados.
-        </p>
-    </div>
+   
     """, unsafe_allow_html=True)
