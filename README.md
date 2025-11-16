@@ -71,7 +71,7 @@ Satisfacción del cliente: Lograr que el bodeguero perciba una mejora significat
 
 - **v2.5 (Septiembre 15 de 2025)**  
   - Se añadió un login y un cierre de sesión.
-  - Se añadió el CRUD para los movimientos de inventario.
+  - Se diseñaron y crearon las funciones para el CRUD de Movimientos de Inventario.
   - Se añadió un historial de movimientos junto a su respectivo dashboard.
 
 - **v3.0 (Noviembre 14 de 2025)**  
@@ -80,6 +80,7 @@ Satisfacción del cliente: Lograr que el bodeguero perciba una mejora significat
   - Se optimizó el flujo de navegación entre módulos mediante un enrutador interno más ordenado.
   - Se estandarizaron nombres, rutas y archivos para una mejor consistencia en el desarrollo.
   - Se preparó la base del proyecto para futuras integraciones como reportes avanzados, nuevos módulos, etc.
+  - Se diseñaron y crearon las funciones para el CRUD de Promociones.
     
  - **v3.5 (Noviembre 15 de 2025)**
    - Sidebar rediseñado completamente para ofrecer una estética más moderna, con mejor organización visual.
