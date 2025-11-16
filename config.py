@@ -15,7 +15,7 @@ APP_CONFIG = {
 APP_INFO = {
     "name": "Q'Bodega",
     "subtitle": "Control total, sin complicaciones.",
-    "version": "3.5",
+    "version": "2.5",
     "developer": "Soft Solutions"
 }
 
@@ -62,3 +62,6 @@ STOCK_MEDIO = 15
 
 # Logo de la empresa
 LOGO_URL = "https://raw.githubusercontent.com/JairAmado08/Q-Bodega/main/images/Q'Bodega.png"
+
+# Logo de SoftSolutions
+SOFTSOLUTIONS_LOGO_URL = "https://raw.githubusercontent.com/JairAmado08/Q-Bodega/main/images/SoftSolutions.png"
