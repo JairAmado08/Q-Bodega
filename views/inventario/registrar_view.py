@@ -4,10 +4,14 @@ Vista de Registro de Productos
 import streamlit as st
 from inventario_crud import registrar_producto, producto_existe
 from config import CATEGORIAS
+from utils import generar_id_producto
 
 def mostrar():
     """Muestra el formulario de registro de productos"""
     st.markdown("## ➕ Registrar Nuevo Producto")
+    
+    # Generar ID automáticamente
+    id_producto_auto = generar_id_producto()
     
     with st.container():
         col1, col2 = st.columns([2, 1])
@@ -16,9 +20,11 @@ def mostrar():
             with st.form("form_Registrar", clear_on_submit=True):
                 st.markdown("### 📝 Información del Producto")
                 
+                # Mostrar ID que se asignará
+                st.info(f"🆔 **ID automático asignado:** `{id_producto_auto}`")
+                
                 col_form1, col_form2 = st.columns(2)
                 with col_form1:
-                    id_ = st.text_input("🆔 ID del producto", placeholder="Ej: P001")
                     nombre = st.text_input("🏷️ Nombre del producto", placeholder="Ej: Inca Kola 1.5L")
                     categoria = st.selectbox("📂 Categoría", options=CATEGORIAS, index=5)
                 
