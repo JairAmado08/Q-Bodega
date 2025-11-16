@@ -5,6 +5,7 @@ import streamlit as st
 from datetime import datetime, timedelta
 from data_manager import get_inventario
 from promociones_crud import crear_promocion, promocion_existe
+from utils import generar_id_promocion
 
 def mostrar():
     """Muestra el formulario de registro de promociones"""
@@ -16,16 +17,21 @@ def mostrar():
         st.error("❌ No hay productos disponibles. Primero registra algunos productos.")
         st.stop()
     
+    # Generar ID automáticamente
+    id_promocion_auto = generar_id_promocion()
+    
     col1, col2 = st.columns([2, 1])
     
     with col1:
         with st.form("form_registrar_promocion", clear_on_submit=True):
             st.markdown("### 📝 Información de la Promoción")
             
+            # Mostrar ID que se asignará
+            st.info(f"🆔 **ID automático asignado:** `{id_promocion_auto}`")
+            
             col_form1, col_form2 = st.columns(2)
             
             with col_form1:
-                id_promocion = st.text_input("🆔 ID de la promoción", placeholder="Ej: PR001")
                 nombre = st.text_input("🏷️ Nombre de la promoción", placeholder="Ej: 2x1 en Gaseosas")
                 
                 tipo = st.selectbox(
