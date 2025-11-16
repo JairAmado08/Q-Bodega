@@ -53,7 +53,11 @@ st.markdown(get_custom_css(), unsafe_allow_html=True)
 inicializar_sesion()
 inicializar_inventario()
 inicializar_movimientos()
-inicializar_promociones()  # ← NUEVO: Inicializar promociones
+inicializar_promociones()
+
+# Inicializar menú principal si no existe
+if "menu_principal" not in st.session_state:
+    st.session_state.menu_principal = "inicio"
 
 # ----------------------------
 # Sistema de Autenticación
