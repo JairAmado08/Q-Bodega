@@ -3,6 +3,7 @@ Vista de Inicio/Bienvenida
 """
 import streamlit as st
 from datetime import datetime
+from zoneinfo import ZoneInfo
 from config import SOFTSOLUTIONS_LOGO_URL, APP_INFO
 from inventario_crud import obtener_estadisticas
 from movimientos_crud import obtener_estadisticas_movimientos
@@ -14,11 +15,37 @@ def mostrar():
     
     # Obtener información del usuario
     display_name = get_display_name(get_current_user())
-    hora_actual = datetime.now().strftime("%H:%M")
-    fecha_actual = datetime.now().strftime("%A, %d de %B de %Y")
     
-    # Determinar saludo según la hora
-    hora = datetime.now().hour
+    # Hora de Perú (UTC-5)
+    try:
+        zona_peru = ZoneInfo("America/Lima")
+    except:
+        # Fallback si ZoneInfo no está disponible
+        from datetime import timezone, timedelta
+        zona_peru = timezone(timedelta(hours=-5))
+    
+    ahora_peru = datetime.now(zona_peru)
+    hora_actual = ahora_peru.strftime("%H:%M")
+    
+    # Nombres de meses en español
+    meses_esp = {
+        1: "enero", 2: "febrero", 3: "marzo", 4: "abril",
+        5: "mayo", 6: "junio", 7: "julio", 8: "agosto",
+        9: "septiembre", 10: "octubre", 11: "noviembre", 12: "diciembre"
+    }
+    
+    # Nombres de días en español
+    dias_esp = {
+        0: "lunes", 1: "martes", 2: "miércoles", 3: "jueves",
+        4: "viernes", 5: "sábado", 6: "domingo"
+    }
+    
+    dia_nombre = dias_esp[ahora_peru.weekday()].capitalize()
+    mes_nombre = meses_esp[ahora_peru.month]
+    fecha_actual = f"{dia_nombre}, {ahora_peru.day} de {mes_nombre} de {ahora_peru.year}"
+    
+    # Determinar saludo según la hora (hora de Perú)
+    hora = ahora_peru.hour
     if hora < 12:
         saludo = "Buenos días"
         emoji = "🌅"
