@@ -1,5 +1,5 @@
 """
-Vista del Sidebar con separadores de sección y highlight funcional
+Vista del Sidebar con separadores de sección y botón de inicio
 """
 import streamlit as st
 from auth import logout_user
@@ -19,9 +19,9 @@ def mostrar_sidebar(display_name):
         str: Clave de la opción seleccionada
     """
     
-    # Inicializar estado del menú
+    # Inicializar estado del menú (siempre al inicio)
     if "menu_principal" not in st.session_state:
-        st.session_state.menu_principal = "inicio"  # Cambiado a "inicio"
+        st.session_state.menu_principal = "inicio"
     
     with st.sidebar:
         # Información del usuario logueado
@@ -29,6 +29,8 @@ def mostrar_sidebar(display_name):
         
         # Botón de cerrar sesión
         if st.button("🚪 Cerrar Sesión", use_container_width=True):
+            # Resetear el menú al cerrar sesión
+            st.session_state.menu_principal = "inicio"
             logout_user()
         
         # Logo
@@ -124,6 +126,13 @@ def mostrar_sidebar(display_name):
                 st.rerun()
         
         # --------------------------------
+        # BOTÓN DE INICIO (destacado)
+        # --------------------------------
+        crear_boton_menu("🏠 INICIO", "inicio")
+        
+        st.markdown("<br>", unsafe_allow_html=True)
+        
+        # --------------------------------
         # Inventario
         # --------------------------------
         with st.expander("📦 **Inventario**", expanded=False):
@@ -147,7 +156,7 @@ def mostrar_sidebar(display_name):
         # --------------------------------
         # Promociones
         # --------------------------------
-        with st.expander("🎉 **Promociones**", expanded=True):
+        with st.expander("🎉 **Promociones**", expanded=False):
             crear_boton_menu("🎁 Dashboard", "promociones_dashboard")
             crear_boton_menu("➕ Registrar Promoción", "registrar_promocion")
             crear_boton_menu("🔍 Buscar Promoción", "buscar_promocion")
