@@ -33,11 +33,11 @@ def mostrar():
     col1, col2, col3 = st.columns([1, 2, 1])
     
     with col2:
-        # Logo centrado
+        # Logo centrado (más pequeño)
         st.markdown(f"""
-        <div style="text-align: center; padding: 2rem 0;">
+        <div style="text-align: center; padding: 1rem 0;">
             <img src="{SOFTSOLUTIONS_LOGO_URL}" 
-                 style="max-width: 400px; width: 100%; height: auto; margin-bottom: 2rem;"
+                 style="max-width: 250px; width: 100%; height: auto; margin-bottom: 1.5rem;"
                  alt="SoftSolutions Logo">
         </div>
         """, unsafe_allow_html=True)
