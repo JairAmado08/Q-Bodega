@@ -4,7 +4,7 @@ Vista de Registro de Promociones
 import streamlit as st
 from datetime import datetime, timedelta
 from data_manager import get_inventario
-from promociones_crud import crear_promocion, promocion_existe
+from promociones_crud import crear_promocion
 from utils import generar_id_promocion
 
 def mostrar():
@@ -107,41 +107,36 @@ def mostrar():
         
         st.markdown("### 📋 Consejos")
         st.warning("""
-        - Usa IDs únicos (PR001, PR002...)
+        - El ID se genera automáticamente
         - Verifica que las fechas sean correctas
         - Las promociones activas se aplican automáticamente en ventas
         - Puedes tener múltiples promociones por producto
         """)
     
     if submit:
-        if id_promocion and nombre:
-            if promocion_existe(id_promocion):
+        if nombre:
+            # Preparar datos usando el ID automático
+            datos_promocion = {
+                "id": id_promocion_auto,
+                "nombre": nombre,
+                "tipo": tipo,
+                "valor": valor,
+                "producto_id": producto_id,
+                "fecha_inicio": fecha_inicio.strftime("%Y-%m-%d"),
+                "fecha_fin": fecha_fin.strftime("%Y-%m-%d"),
+                "estado": estado
+            }
+            
+            # Crear promoción
+            if crear_promocion(datos_promocion):
                 st.markdown(
-                    '<div class="warning-message">⚠️ Ya existe una promoción con este ID.</div>',
+                    f'<div class="success-message">✅ Promoción creada correctamente con ID: <strong>{id_promocion_auto}</strong></div>',
                     unsafe_allow_html=True
                 )
-            else:
-                # Preparar datos
-                datos_promocion = {
-                    "id": id_promocion,
-                    "nombre": nombre,
-                    "tipo": tipo,
-                    "valor": valor,
-                    "producto_id": producto_id,
-                    "fecha_inicio": fecha_inicio.strftime("%Y-%m-%d"),
-                    "fecha_fin": fecha_fin.strftime("%Y-%m-%d"),
-                    "estado": estado
-                }
-                
-                # Crear promoción
-                if crear_promocion(datos_promocion):
-                    st.markdown(
-                        '<div class="success-message">✅ Promoción creada correctamente.</div>',
-                        unsafe_allow_html=True
-                    )
-                    st.balloons()
+                st.balloons()
+                st.rerun()
         else:
             st.markdown(
-                '<div class="error-message">❌ Debes completar al menos ID y Nombre.</div>',
+                '<div class="error-message">❌ Debes completar el nombre de la promoción.</div>',
                 unsafe_allow_html=True
             )
