@@ -158,11 +158,3 @@ def mostrar():
         if st.button("🎁 Ver Promociones", use_container_width=True):
             st.session_state.menu_principal = "promociones_dashboard"
             st.rerun()
-    
-    st.markdown("<br><br>", unsafe_allow_html=True)
-    
-    # ----------------------------
-    # Footer con información del sistema
-    # ----------------------------
-   
-    """, unsafe_allow_html=True)
