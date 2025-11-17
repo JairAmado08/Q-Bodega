@@ -19,7 +19,7 @@ from views.promociones import (
 )
 from views.ventas import (
     ventas_dashboard_view, registrar_venta_view,
-    buscar_venta_view, detalle_venta_view
+    buscar_venta_view, detalle_venta_view, devolucion_view
 )
 
 def mostrar_contenido(opcion_key):
@@ -71,7 +71,7 @@ def mostrar_contenido(opcion_key):
     elif opcion_key == "eliminar_promocion":
         eliminar_promocion_view.mostrar()
     
-    # Vistas de ventas 
+    # Vistas de ventas (NUEVO)
     elif opcion_key == "ventas_dashboard":
         ventas_dashboard_view.mostrar()
     elif opcion_key == "registrar_venta":
