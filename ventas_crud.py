@@ -3,7 +3,6 @@ Módulo CRUD para gestión de ventas
 """
 import streamlit as st
 import pandas as pd
-import json
 from datetime import datetime
 from inventario_crud import actualizar_stock_producto, obtener_producto
 from movimientos_crud import registrar_movimiento
