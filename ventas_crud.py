@@ -297,9 +297,6 @@ def procesar_devolucion(venta_id, items_devolucion, motivo=""):
             st.error(f"❌ Producto {item['producto_id']} no encontrado")
             continue
         
-        # Devolver al inventario
-        actualizar_stock_producto(item["producto_id"], item["cantidad"])
-        
         # Registrar movimiento de devolución
         id_mov = generar_id_movimiento()
         registrar_movimiento(
