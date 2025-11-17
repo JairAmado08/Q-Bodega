@@ -128,6 +128,10 @@ def get_promociones():
     """Retorna el DataFrame de promociones"""
     return st.session_state.promociones
 
+def get_ventas():
+    """Retorna el DataFrame de ventas"""
+    return st.session_state.ventas
+
 def actualizar_inventario(df):
     """Actualiza el DataFrame de inventario"""
     st.session_state.inventario = df
@@ -139,3 +143,7 @@ def actualizar_movimientos(df):
 def actualizar_promociones(df):
     """Actualiza el DataFrame de promociones"""
     st.session_state.promociones = df
+
+def actualizar_ventas(df):
+    """Actualiza el DataFrame de ventas"""
+    st.session_state.ventas = df
