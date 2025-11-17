@@ -164,11 +164,12 @@ def mostrar_sidebar(display_name):
             crear_boton_menu("🗑️ Eliminar Promoción", "eliminar_promocion")
         
         # --------------------------------
-        # Ventas
+        # VENTAS (NUEVO)
         # --------------------------------
         with st.expander("💰 **Ventas**", expanded=False):
             crear_boton_menu("💵 Dashboard", "ventas_dashboard")
             crear_boton_menu("🛒 Registrar Venta", "registrar_venta")
             crear_boton_menu("🔍 Buscar Venta", "buscar_venta")
+            crear_boton_menu("🔄 Devoluciones", "devolucion_venta")
     
     return st.session_state.menu_principal
