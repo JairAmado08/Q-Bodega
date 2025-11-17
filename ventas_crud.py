@@ -262,3 +262,85 @@ def venta_existe(venta_id):
         bool: True si la venta existe
     """
     return venta_id in st.session_state.ventas["ID"].values
+
+def procesar_devolucion(venta_id, items_devolucion, motivo=""):
+    """
+    Procesa una devolución parcial o total de una venta
+    
+    Args:
+        venta_id: ID de la venta a devolver
+        items_devolucion: list de items a devolver
+        [
+            {
+                "producto_id": "P001",
+                "cantidad": 2,
+                "motivo": "Producto defectuoso"
+            }
+        ]
+        motivo: Motivo general de la devolución
+    
+    Returns:
+        bool: True si se procesó exitosamente
+    """
+    from datetime import datetime
+    
+    # Verificar que la venta existe
+    venta = obtener_venta_por_id(venta_id)
+    if not venta:
+        st.error(f"❌ No existe la venta {venta_id}")
+        return False
+    
+    # Procesar cada item de devolución
+    for item in items_devolucion:
+        producto = obtener_producto(item["producto_id"])
+        if producto is None:
+            st.error(f"❌ Producto {item['producto_id']} no encontrado")
+            continue
+        
+        # Devolver al inventario
+        actualizar_stock_producto(item["producto_id"], item["cantidad"])
+        
+        # Registrar movimiento de devolución
+        id_mov = generar_id_movimiento()
+        registrar_movimiento(
+            id_mov,
+            "Devolución",
+            item["producto_id"],
+            item["cantidad"],
+            f"Devolución de venta {venta_id}. Motivo: {item.get('motivo', motivo)}"
+        )
+    
+    # Registrar en historial de devoluciones
+    if "devoluciones" not in st.session_state:
+        st.session_state.devoluciones = pd.DataFrame(
+            columns=["ID_Devolucion", "ID_Venta", "Fecha", "Items", "Motivo", "Estado"]
+        )
+    
+    id_devolucion = f"DEV{len(st.session_state.devoluciones) + 1:03d}"
+    
+    nueva_devolucion = pd.DataFrame(
+        [[id_devolucion, venta_id, datetime.now().strftime("%Y-%m-%d %H:%M"),
+          str(items_devolucion), motivo, "procesada"]],
+        columns=["ID_Devolucion", "ID_Venta", "Fecha", "Items", "Motivo", "Estado"]
+    )
+    
+    st.session_state.devoluciones = pd.concat(
+        [st.session_state.devoluciones, nueva_devolucion],
+        ignore_index=True
+    )
+    
+    return True
+
+def obtener_devoluciones():
+    """
+    Obtiene todas las devoluciones registradas
+    
+    Returns:
+        DataFrame: Todas las devoluciones
+    """
+    if "devoluciones" not in st.session_state:
+        st.session_state.devoluciones = pd.DataFrame(
+            columns=["ID_Devolucion", "ID_Venta", "Fecha", "Items", "Motivo", "Estado"]
+        )
+    
+    return st.session_state.devoluciones
