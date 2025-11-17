@@ -71,7 +71,7 @@ def mostrar_contenido(opcion_key):
     elif opcion_key == "eliminar_promocion":
         eliminar_promocion_view.mostrar()
     
-    # Vistas de ventas (NUEVO)
+    # Vistas de ventas
     elif opcion_key == "ventas_dashboard":
         ventas_dashboard_view.mostrar()
     elif opcion_key == "registrar_venta":
@@ -80,3 +80,5 @@ def mostrar_contenido(opcion_key):
         buscar_venta_view.mostrar()
     elif opcion_key == "detalle_venta":
         detalle_venta_view.mostrar()
+    elif opcion_key == "devolucion_venta":
+        devolucion_view.mostrar()
