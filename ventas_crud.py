@@ -159,6 +159,21 @@ def buscar_ventas(filtros):
 def obtener_todas_las_ventas():
     return st.session_state.ventas
 
+def obtener_estadisticas_ventas(ventas):
+    """
+    Genera estadísticas simples para el dashboard de ventas.
+    ventas: lista de diccionarios con las ventas registradas.
+    """
+    total_ventas = len(ventas)
+    total_monto = sum(v.get("total", 0) for v in ventas)
+    venta_promedio = total_monto / total_ventas if total_ventas > 0 else 0
+
+    return {
+        "total_ventas": total_ventas,
+        "total_monto": total_monto,
+        "venta_promedio": venta_promedio
+    }
+
 
 # ------------------------------------------------------------------------------------
 # CALCULAR TOTALES (usa promociones)
