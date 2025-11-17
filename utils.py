@@ -117,6 +117,44 @@ def generar_id_promocion():
     # Formatear con ceros a la izquierda (3 dígitos)
     return f"PR{siguiente_numero:03d}"
 
+def generar_id_venta():
+    """
+    Genera un ID único para una nueva venta
+    Formato: V001, V002, V003, etc.
+    
+    Returns:
+        str: ID de la venta generado
+    """
+    ventas = st.session_state.ventas
+    
+    if ventas.empty:
+        return "V001"
+    
+    # Obtener todos los IDs actuales que empiecen con V
+    ids_ventas = ventas[ventas["ID"].str.startswith("V", na=False)]["ID"].tolist()
+    
+    if not ids_ventas:
+        return "V001"
+    
+    # Extraer números de los IDs
+    numeros = []
+    for id_venta in ids_ventas:
+        try:
+            # Extraer el número después de 'V'
+            numero = int(id_venta[1:])
+            numeros.append(numero)
+        except (ValueError, IndexError):
+            continue
+    
+    # Obtener el siguiente número
+    if numeros:
+        siguiente_numero = max(numeros) + 1
+    else:
+        siguiente_numero = 1
+    
+    # Formatear con ceros a la izquierda (3 dígitos)
+    return f"V{siguiente_numero:03d}"
+
 def validar_id_unico(id_valor, tipo="producto"):
     """
     Valida si un ID es único en el sistema
