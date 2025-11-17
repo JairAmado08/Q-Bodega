@@ -70,3 +70,13 @@ def mostrar_contenido(opcion_key):
         actualizar_promocion_view.mostrar()
     elif opcion_key == "eliminar_promocion":
         eliminar_promocion_view.mostrar()
+    
+    # Vistas de ventas 
+    elif opcion_key == "ventas_dashboard":
+        ventas_dashboard_view.mostrar()
+    elif opcion_key == "registrar_venta":
+        registrar_venta_view.mostrar()
+    elif opcion_key == "buscar_venta":
+        buscar_venta_view.mostrar()
+    elif opcion_key == "detalle_venta":
+        detalle_venta_view.mostrar()
