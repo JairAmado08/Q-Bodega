@@ -3,6 +3,7 @@ Módulo CRUD para gestión de ventas
 """
 import streamlit as st
 import pandas as pd
+import json
 from datetime import datetime
 from inventario_crud import actualizar_stock_producto, obtener_producto
 from movimientos_crud import registrar_movimiento
@@ -15,16 +16,6 @@ def registrar_venta(venta):
     
     Args:
         venta: dict con los datos de la venta
-        {
-            "id": "V001",
-            "fecha": "2025-11-16 15:30",
-            "items": [...],
-            "total_bruto": 100.00,
-            "total_descuento": 10.00,
-            "total_final": 90.00,
-            "metodo_pago": "efectivo",
-            "promociones_aplicadas": ["PR001"]
-        }
     
     Returns:
         bool: True si se registró exitosamente
@@ -43,12 +34,12 @@ def registrar_venta(venta):
             )
             return False
     
-    # Registrar la venta
+    # Registrar la venta - GUARDAR ITEMS COMO JSON
     nueva_venta = pd.DataFrame(
         [[
             venta["id"],
             venta["fecha"],
-            str(venta["items"]),  # Guardar como string JSON
+            json.dumps(venta["items"]),  # Guardar como JSON válido
             venta["total_bruto"],
             venta["total_descuento"],
             venta["total_final"],
@@ -71,7 +62,6 @@ def registrar_venta(venta):
         
         # Registrar movimiento de salida
         id_mov = generar_id_movimiento()
-        producto = obtener_producto(item["producto_id"])
         
         registrar_movimiento(
             id_mov,
@@ -101,18 +91,32 @@ def obtener_venta_por_id(venta_id):
     
     return venta.iloc[0].to_dict()
 
+def obtener_items_venta(venta_id):
+    """
+    Obtiene los items de una venta específica parseados
+    
+    Args:
+        venta_id: ID de la venta
+    
+    Returns:
+        list: Lista de items o lista vacía si hay error
+    """
+    venta = obtener_venta_por_id(venta_id)
+    if not venta:
+        return []
+    
+    try:
+        items = json.loads(venta['Items'])
+        return items
+    except:
+        return []
+
 def buscar_ventas(filtros):
     """
     Busca ventas según filtros
     
     Args:
         filtros: dict con criterios de búsqueda
-        {
-            "fecha_inicio": "2025-11-01",
-            "fecha_fin": "2025-11-30",
-            "metodo_pago": "efectivo",
-            "id": "V001"
-        }
     
     Returns:
         DataFrame: Ventas que cumplen los criterios
@@ -154,14 +158,6 @@ def calcular_totales(carrito):
     
     Args:
         carrito: list de items del carrito
-        [
-            {
-                "producto_id": "P001",
-                "nombre": "Coca Cola",
-                "cantidad": 2,
-                "precio_unitario": 3.50
-            }
-        ]
     
     Returns:
         dict: Totales calculados con promociones aplicadas
@@ -225,32 +221,6 @@ def obtener_estadisticas_ventas():
         "ingresos_mes": ventas_mes["Total_Final"].sum() if not ventas_mes.empty else 0
     }
 
-def obtener_productos_mas_vendidos(limite=5):
-    """
-    Obtiene los productos más vendidos
-    
-    Args:
-        limite: Número de productos a retornar
-    
-    Returns:
-        list: Lista de productos más vendidos
-    """
-    ventas = st.session_state.ventas
-    
-    if ventas.empty:
-        return []
-    
-    # Contar productos vendidos
-    productos_count = {}
-    
-    for _, venta in ventas.iterrows():
-        items_str = venta["Items"]
-        # Parsear items (esto es simplificado, en producción usar json.loads)
-        # Por ahora retornamos lista vacía si no hay datos
-        pass
-    
-    return []
-
 def venta_existe(venta_id):
     """
     Verifica si una venta existe
@@ -270,44 +240,68 @@ def procesar_devolucion(venta_id, items_devolucion, motivo=""):
     Args:
         venta_id: ID de la venta a devolver
         items_devolucion: list de items a devolver
-        [
-            {
-                "producto_id": "P001",
-                "cantidad": 2,
-                "motivo": "Producto defectuoso"
-            }
-        ]
         motivo: Motivo general de la devolución
     
     Returns:
         bool: True si se procesó exitosamente
     """
-    from datetime import datetime
-    
     # Verificar que la venta existe
     venta = obtener_venta_por_id(venta_id)
     if not venta:
         st.error(f"❌ No existe la venta {venta_id}")
         return False
     
+    # Obtener items originales de la venta
+    items_venta = obtener_items_venta(venta_id)
+    
     # Procesar cada item de devolución
-    for item in items_devolucion:
-        producto = obtener_producto(item["producto_id"])
+    for item_dev in items_devolucion:
+        producto = obtener_producto(item_dev["producto_id"])
         if producto is None:
-            st.error(f"❌ Producto {item['producto_id']} no encontrado")
-            continue
+            st.error(f"❌ Producto {item_dev['producto_id']} no encontrado")
+            return False
         
-        # Devolver al inventario
-        actualizar_stock_producto(item["producto_id"], item["cantidad"])
+        # Validar que el producto esté en la venta original
+        item_encontrado = None
+        for item_orig in items_venta:
+            if item_orig["producto_id"] == item_dev["producto_id"]:
+                item_encontrado = item_orig
+                break
         
-        # Registrar movimiento de devolución
+        if not item_encontrado:
+            st.error(f"❌ El producto {producto['Nombre']} no está en esta venta")
+            return False
+        
+        # Validar que la cantidad no exceda lo vendido
+        if item_dev["cantidad"] > item_encontrado["cantidad"]:
+            st.error(
+                f"❌ No puedes devolver {item_dev['cantidad']} unidades de {producto['Nombre']}. "
+                f"Solo se vendieron {item_encontrado['cantidad']} unidades."
+            )
+            return False
+        
+        # Devolver al inventario (SIN registrar movimiento aquí para evitar duplicación)
+        actualizar_stock_producto(item_dev["producto_id"], item_dev["cantidad"])
+        
+        # Registrar movimiento de devolución (esto ya actualiza el inventario internamente)
         id_mov = generar_id_movimiento()
-        registrar_movimiento(
-            id_mov,
-            "Devolución",
-            item["producto_id"],
-            item["cantidad"],
-            f"Devolución de venta {venta_id}. Motivo: {item.get('motivo', motivo)}"
+        # IMPORTANTE: NO llamar a registrar_movimiento porque ya actualizamos el stock arriba
+        # Solo registrar en el DataFrame de movimientos SIN tocar el inventario de nuevo
+        from datetime import datetime
+        producto_info = obtener_producto(item_dev["producto_id"])
+        
+        nuevo_movimiento = pd.DataFrame(
+            [[id_mov, "Devolución", item_dev["producto_id"], producto_info["Nombre"], 
+              item_dev["cantidad"], datetime.now().strftime("%Y-%m-%d"), 
+              st.session_state.username, 
+              f"Devolución de venta {venta_id}. Motivo: {item_dev.get('motivo', motivo)}"]],
+            columns=["ID_Movimiento", "Tipo", "Producto_ID", "Producto_Nombre", 
+                    "Cantidad", "Fecha", "Usuario", "Observaciones"]
+        )
+        
+        st.session_state.movimientos = pd.concat(
+            [st.session_state.movimientos, nuevo_movimiento],
+            ignore_index=True
         )
     
     # Registrar en historial de devoluciones
@@ -320,7 +314,7 @@ def procesar_devolucion(venta_id, items_devolucion, motivo=""):
     
     nueva_devolucion = pd.DataFrame(
         [[id_devolucion, venta_id, datetime.now().strftime("%Y-%m-%d %H:%M"),
-          str(items_devolucion), motivo, "procesada"]],
+          json.dumps(items_devolucion), motivo, "procesada"]],
         columns=["ID_Devolucion", "ID_Venta", "Fecha", "Items", "Motivo", "Estado"]
     )
     
