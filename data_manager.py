@@ -17,8 +17,7 @@ def inicializar_inventario():
             ["P002", "Arroz Costeño 1kg", "Abarrotes secos", 25, 5.00, "2024-01-16"],
             ["P003", "Leche Gloria tarro", "Lácteos y derivados", 18, 4.80, "2024-01-17"],
             ["P004", "Pan francés (unidad)", "Panadería y repostería", 50, 0.40, "2024-01-18"],
-            ["P005", "Atún Florida 170g", "Enlatados y conservas", 2, 6.00, "2024-01-19"],
-            ["P006", "Cerveza Pilsen Callao 630 ml", "Bebidas", 2, 6.50, "2025-11-08"]
+            ["P005", "Atún Florida 170g", "Enlatados y conservas", 2, 6.00, "2024-01-19"]
         ]
         
         for ejemplo in ejemplos:
@@ -76,9 +75,7 @@ def inicializar_promociones():
             ["PR003", "Descuento S/2 en Pan", "monto fijo", 0.20, "P004", "Pan francés (unidad)", 
              "2025-11-15", "2025-11-20", "activa"],
             ["PR004", "Combo Arroz", "porcentaje", 15, "P002", "Arroz Costeño 1kg", 
-             "2025-10-01", "2025-10-31", "inactiva"],
-            ["PR005", "¡Bien Heladas!", "porcentaje", 30, "P006", "Cerveza Pilsen Callao 630 ml", 
-             "2025-11-08", "2025-12-20", "activa"]
+             "2025-10-01", "2025-10-31", "inactiva"]
         ]
         
         for promocion in promociones_ejemplo:
@@ -89,6 +86,33 @@ def inicializar_promociones():
             )
             st.session_state.promociones = pd.concat(
                 [st.session_state.promociones, nueva_promo], 
+                ignore_index=True
+            )
+
+def inicializar_ventas():
+    """Inicializa el DataFrame de ventas con datos de ejemplo"""
+    if "ventas" not in st.session_state:
+        st.session_state.ventas = pd.DataFrame(
+            columns=["ID", "Fecha", "Items", "Total_Bruto", "Total_Descuento",
+                    "Total_Final", "Metodo_Pago", "Promociones"]
+        )
+        
+        # Datos de ejemplo de ventas
+        ventas_ejemplo = [
+            ["V001", "2025-11-16 10:30", "[{'producto_id':'P001','cantidad':2}]", 
+             13.00, 6.50, 6.50, "efectivo", "PR001"],
+            ["V002", "2025-11-16 14:15", "[{'producto_id':'P003','cantidad':1}]", 
+             4.80, 0.96, 3.84, "tarjeta", "PR002"],
+        ]
+        
+        for venta in ventas_ejemplo:
+            nueva_venta = pd.DataFrame(
+                [venta],
+                columns=["ID", "Fecha", "Items", "Total_Bruto", "Total_Descuento",
+                        "Total_Final", "Metodo_Pago", "Promociones"]
+            )
+            st.session_state.ventas = pd.concat(
+                [st.session_state.ventas, nueva_venta],
                 ignore_index=True
             )
 
