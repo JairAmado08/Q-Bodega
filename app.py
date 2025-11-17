@@ -13,7 +13,7 @@ try:
         logout_user, get_current_user
     )
     from data_manager import (
-        inicializar_inventario, inicializar_movimientos, inicializar_promociones
+        inicializar_inventario, inicializar_movimientos, inicializar_promociones, inicializar_ventas
     )
     from ui_components import mostrar_header, mostrar_user_info, mostrar_logo, mostrar_footer
 except ImportError as e:
