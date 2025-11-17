@@ -13,7 +13,8 @@ try:
         logout_user, get_current_user
     )
     from data_manager import (
-        inicializar_inventario, inicializar_movimientos, inicializar_promociones, inicializar_ventas
+        inicializar_inventario, inicializar_movimientos, 
+        inicializar_promociones, inicializar_ventas
     )
     from ui_components import mostrar_header, mostrar_user_info, mostrar_logo, mostrar_footer
 except ImportError as e:
@@ -28,6 +29,7 @@ except ImportError as e:
     - inventario_crud.py
     - movimientos_crud.py
     - promociones_crud.py
+    - ventas_crud.py
     """)
     st.stop()
 
@@ -54,6 +56,7 @@ inicializar_sesion()
 inicializar_inventario()
 inicializar_movimientos()
 inicializar_promociones()
+inicializar_ventas()  # ← CRÍTICO: Debe estar aquí
 
 # Inicializar menú principal si no existe
 if "menu_principal" not in st.session_state:
