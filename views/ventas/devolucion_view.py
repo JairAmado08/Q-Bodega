@@ -1,9 +1,11 @@
 """
-Vista de Devoluciones
+Vista de Devoluciones - CORREGIDA
 """
 import streamlit as st
-import ast
-from ventas_crud import obtener_venta_por_id, procesar_devolucion, obtener_devoluciones
+from ventas_crud import (
+    obtener_venta_por_id, procesar_devolucion, 
+    obtener_devoluciones, obtener_items_venta
+)
 from data_manager import get_ventas
 from inventario_crud import obtener_producto
 
@@ -35,6 +37,11 @@ def mostrar():
             
             if venta_sel:
                 venta = obtener_venta_por_id(venta_sel)
+                items_venta = obtener_items_venta(venta_sel)
+                
+                if not items_venta:
+                    st.error("❌ No se pudieron cargar los productos de esta venta.")
+                    st.stop()
                 
                 st.markdown("---")
                 st.markdown("### 📦 Detalles de la Venta")
@@ -47,132 +54,179 @@ def mostrar():
                 with col_v3:
                     st.metric("Método", venta['Metodo_Pago'].upper())
                 
+                # Mostrar productos de la venta
                 st.markdown("---")
-                st.markdown("### 🔄 Items a Devolver")
+                st.markdown("### 🛍️ Productos en la Venta")
                 
-                # Parsear items de la venta (simplificado)
-                try:
-                    items_str = venta['Items']
-                    # En producción, usar json.loads
-                    st.info("💡 Selecciona los productos a devolver")
+                for item in items_venta:
+                    col_p1, col_p2, col_p3 = st.columns([2, 1, 1])
+                    with col_p1:
+                        st.markdown(f"**{item['nombre']}**")
+                    with col_p2:
+                        st.markdown(f"Cantidad: **{item['cantidad']}**")
+                    with col_p3:
+                        st.markdown(f"S/{item['precio_unitario']:.2f} c/u")
+                
+                st.markdown("---")
+                st.markdown("### 🔄 Seleccionar Items a Devolver")
+                
+                # Inicializar carrito de devolución
+                if "carrito_devolucion" not in st.session_state:
+                    st.session_state.carrito_devolucion = []
+                
+                # Selector de producto SOLO de los que están en la venta
+                col_prod, col_cant, col_btn = st.columns([3, 1, 1])
+                
+                with col_prod:
+                    # Crear diccionario SOLO con productos de la venta
+                    productos_venta = {}
+                    for item in items_venta:
+                        productos_venta[item['producto_id']] = {
+                            'nombre': item['nombre'],
+                            'cantidad': item['cantidad'],
+                            'precio_unitario': item['precio_unitario']
+                        }
                     
-                    # Simulación de items (en producción, parsear correctamente)
-                    # Por ahora, permitir selección manual
+                    productos_ids = list(productos_venta.keys())
                     
-                    st.markdown("#### Seleccionar productos")
+                    if not productos_ids:
+                        st.error("❌ No hay productos disponibles para devolver")
+                        st.stop()
                     
-                    # Inicializar carrito de devolución
-                    if "carrito_devolucion" not in st.session_state:
-                        st.session_state.carrito_devolucion = []
+                    producto_dev = st.selectbox(
+                        "📦 Producto a devolver",
+                        productos_ids,
+                        format_func=lambda x: f"{x} - {productos_venta[x]['nombre']} (Vendidos: {productos_venta[x]['cantidad']})",
+                        key=f"select_producto_{venta_sel}"
+                    )
+                
+                with col_cant:
+                    # Límite de cantidad según lo vendido
+                    max_cantidad = productos_venta[producto_dev]['cantidad']
                     
-                    # Agregar producto al carrito de devolución
-                    col_prod, col_cant, col_btn = st.columns([3, 1, 1])
+                    # Verificar si ya se agregó al carrito para restar
+                    cantidad_ya_devuelta = 0
+                    for item_carr in st.session_state.carrito_devolucion:
+                        if item_carr['producto_id'] == producto_dev:
+                            cantidad_ya_devuelta += item_carr['cantidad']
                     
-                    with col_prod:
-                        # Nota: En producción, obtener productos de la venta original
-                        from data_manager import get_inventario
-                        inventario = get_inventario()
-                        productos_disp = inventario["ID"].tolist()
-                        
-                        producto_dev = st.selectbox(
-                            "Producto",
-                            productos_disp,
-                            format_func=lambda x: f"{x} - {inventario[inventario['ID']==x]['Nombre'].iloc[0]}"
+                    cantidad_disponible = max_cantidad - cantidad_ya_devuelta
+                    
+                    if cantidad_disponible <= 0:
+                        st.warning(f"Ya agregaste todas las unidades ({max_cantidad})")
+                        cantidad_dev = 0
+                    else:
+                        cantidad_dev = st.number_input(
+                            f"Cantidad (máx: {cantidad_disponible})",
+                            min_value=1,
+                            max_value=cantidad_disponible,
+                            value=min(1, cantidad_disponible),
+                            step=1
                         )
+                
+                with col_btn:
+                    st.markdown("<br>", unsafe_allow_html=True)
+                    if cantidad_disponible > 0 and st.button("➕ Agregar"):
+                        producto_info = productos_venta[producto_dev]
+                        
+                        st.session_state.carrito_devolucion.append({
+                            "producto_id": producto_dev,
+                            "nombre": producto_info['nombre'],
+                            "cantidad": cantidad_dev,
+                            "motivo": ""
+                        })
+                        st.success(f"✅ {producto_info['nombre']} agregado a devolución")
+                        st.rerun()
+                
+                # Mostrar carrito de devolución
+                if st.session_state.carrito_devolucion:
+                    st.markdown("---")
+                    st.markdown("### 🛒 Items a Devolver")
                     
-                    with col_cant:
-                        cantidad_dev = st.number_input("Cantidad", min_value=1, value=1, step=1)
-                    
-                    with col_btn:
-                        st.markdown("<br>", unsafe_allow_html=True)
-                        if st.button("➕ Agregar"):
-                            producto_info = obtener_producto(producto_dev)
-                            
-                            st.session_state.carrito_devolucion.append({
-                                "producto_id": producto_dev,
-                                "nombre": producto_info["Nombre"],
-                                "cantidad": cantidad_dev,
-                                "motivo": ""
-                            })
-                            st.success(f"✅ {producto_info['Nombre']} agregado a devolución")
-                            st.rerun()
-                    
-                    # Mostrar carrito de devolución
-                    if st.session_state.carrito_devolucion:
-                        st.markdown("---")
-                        st.markdown("#### 🛒 Items a Devolver")
+                    for i, item in enumerate(st.session_state.carrito_devolucion):
+                        col_n, col_c, col_m, col_d = st.columns([2, 1, 2, 1])
                         
-                        for i, item in enumerate(st.session_state.carrito_devolucion):
-                            col_n, col_c, col_m, col_d = st.columns([2, 1, 2, 1])
-                            
-                            with col_n:
-                                st.markdown(f"**{item['nombre']}**")
-                            with col_c:
-                                st.markdown(f"x{item['cantidad']}")
-                            with col_m:
-                                motivo = st.text_input(
-                                    "Motivo",
-                                    key=f"motivo_{i}",
-                                    placeholder="Ej: Producto defectuoso"
-                                )
-                                st.session_state.carrito_devolucion[i]["motivo"] = motivo
-                            with col_d:
-                                if st.button("🗑️", key=f"del_dev_{i}"):
-                                    st.session_state.carrito_devolucion.pop(i)
-                                    st.rerun()
-                        
-                        st.markdown("---")
-                        
-                        # Motivo general
-                        motivo_general = st.text_area(
-                            "📝 Motivo General de Devolución",
-                            placeholder="Describe el motivo de la devolución..."
-                        )
-                        
-                        # Botones de acción
-                        col_conf, col_canc = st.columns(2)
-                        
-                        with col_conf:
-                            if st.button("✅ Procesar Devolución", type="primary", use_container_width=True):
-                                # Procesar devolución
-                                if procesar_devolucion(venta_sel, st.session_state.carrito_devolucion, motivo_general):
-                                    st.success("✅ Devolución procesada correctamente!")
-                                    st.balloons()
-                                    
-                                    # Limpiar carrito
-                                    st.session_state.carrito_devolucion = []
-                                    
-                                    st.info("""
-                                    ✅ **Acciones realizadas:**
-                                    - Productos devueltos al inventario
-                                    - Movimientos registrados
-                                    - Devolución documentada
-                                    """)
-                        
-                        with col_canc:
-                            if st.button("❌ Cancelar", use_container_width=True):
-                                st.session_state.carrito_devolucion = []
+                        with col_n:
+                            st.markdown(f"**{item['nombre']}**")
+                        with col_c:
+                            st.markdown(f"x{item['cantidad']}")
+                        with col_m:
+                            motivo = st.text_input(
+                                "Motivo",
+                                key=f"motivo_{i}",
+                                placeholder="Ej: Producto defectuoso"
+                            )
+                            st.session_state.carrito_devolucion[i]["motivo"] = motivo
+                        with col_d:
+                            if st.button("🗑️", key=f"del_dev_{i}"):
+                                st.session_state.carrito_devolucion.pop(i)
                                 st.rerun()
                     
-                except Exception as e:
-                    st.error(f"❌ Error al procesar items: {e}")
-                    st.info("💡 Usa el selector manual de productos arriba")
+                    st.markdown("---")
+                    
+                    # Motivo general
+                    motivo_general = st.text_area(
+                        "📝 Motivo General de Devolución (opcional)",
+                        placeholder="Describe el motivo general de la devolución..."
+                    )
+                    
+                    # Botones de acción
+                    col_conf, col_canc = st.columns(2)
+                    
+                    with col_conf:
+                        if st.button("✅ Procesar Devolución", type="primary", use_container_width=True):
+                            # Procesar devolución
+                            if procesar_devolucion(venta_sel, st.session_state.carrito_devolucion, motivo_general):
+                                st.success("✅ Devolución procesada correctamente!")
+                                st.balloons()
+                                
+                                # Limpiar carrito
+                                st.session_state.carrito_devolucion = []
+                                
+                                st.info("""
+                                ✅ **Acciones realizadas:**
+                                - ✅ Productos devueltos al inventario
+                                - ✅ Movimiento de devolución registrado
+                                - ✅ Devolución documentada en el sistema
+                                """)
+                                
+                                # Mostrar resumen
+                                st.markdown("### 📊 Resumen de Devolución")
+                                total_items = sum(item['cantidad'] for item in st.session_state.carrito_devolucion)
+                                st.metric("Items devueltos", total_items)
+                    
+                    with col_canc:
+                        if st.button("❌ Cancelar", use_container_width=True):
+                            st.session_state.carrito_devolucion = []
+                            st.rerun()
         
         with col2:
             st.markdown("### 💡 Información")
             st.info("""
             **Proceso de devolución:**
-            1. Selecciona la venta
-            2. Agrega productos a devolver
-            3. Indica cantidad y motivo
-            4. Confirma la devolución
+            1. ✅ Selecciona la venta
+            2. ✅ Solo puedes devolver productos que están en esa venta
+            3. ✅ Cantidad máxima = cantidad vendida
+            4. ✅ Indica motivo de cada producto
+            5. ✅ Confirma la devolución
             
-            **Efectos:**
+            **Efectos automáticos:**
             - ✅ Productos vuelven al inventario
-            - ✅ Se registra movimiento
-            - ✅ Se documenta la devolución
+            - ✅ Se registra movimiento tipo "Devolución"
+            - ✅ Se documenta en historial
             
-            **Nota:** Las devoluciones no modifican la venta original, solo registran el movimiento.
+            **Restricciones:**
+            - ❌ No puedes devolver productos que NO están en la venta
+            - ❌ No puedes devolver más unidades de las vendidas
+            - ✅ El stock se actualiza UNA sola vez (sin duplicación)
+            """)
+            
+            st.markdown("### ⚠️ Importante")
+            st.warning("""
+            Las devoluciones NO modifican la venta original, solo:
+            - Registran el movimiento de devolución
+            - Actualizan el inventario
+            - Documentan el historial
             """)
     
     with tab2:
