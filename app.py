@@ -56,7 +56,7 @@ inicializar_sesion()
 inicializar_inventario()
 inicializar_movimientos()
 inicializar_promociones()
-inicializar_ventas()  # ← CRÍTICO: Debe estar aquí
+inicializar_ventas()  
 
 # Inicializar menú principal si no existe
 if "menu_principal" not in st.session_state:
