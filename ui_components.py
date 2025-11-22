@@ -17,7 +17,7 @@ def mostrar_header(titulo, subtitulo, usuario):
     <div class="main-header">
         <h1>{titulo}</h1>
         <h3>{subtitulo}</h3>
-        <p>¡Bienvenido/a, <strong>{usuario}</strong>! | Prototipo CRUD de gestión | Versión 3.5</p>
+        <p>¡Bienvenido/a, <strong>{usuario}</strong>! | Prototipo CRUD de gestión | Versión 4.0</p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -184,6 +184,6 @@ def mostrar_footer():
     st.markdown("""
     <div style="text-align: center; color: #666; padding: 1rem;">
         <p>📦 <strong>Sistema de Inventario Q'Bodega</strong> | Desarrollado por Soft Solutions</p>
-        <p><small>Versión 3.5 - Sin Dependencias Externas</small></p>
+        <p><small>Versión 4.0 - Sin Dependencias Externas</small></p>
     </div>
     """, unsafe_allow_html=True)
