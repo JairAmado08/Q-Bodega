@@ -86,6 +86,9 @@ Satisfacción del cliente: Lograr que el bodeguero perciba una mejora significat
    - Sidebar rediseñado completamente para ofrecer una estética más moderna, con mejor organización visual.
    - Se incorporaron íconos más intuitivos, espaciado optimizado y secciones resaltadas con highlight para mejorar la experiencia de navegación.
 
+ - **v4.0 (Noviembre 20 de 2025)**
+   - Se integró el módulo de Ventas (ventas, devoluciones, etc.)
+
 --- 
 ## Estructura del Proyecto
 
@@ -106,6 +109,7 @@ qbodega/
 ├── inventario_crud.py              # Operaciones CRUD de inventario
 ├── movimientos_crud.py             # Operaciones CRUD de movimientos
 ├── promociones_crud.py             # Operaciones CRUD de promociones
+├── ventas_crud.py                  # Operaciones CRUD de ventas
 │
 ├── ui_components.py                # Componentes UI reutilizables
 ├── utils.py                        # Utilidades del Sistema (ID)
@@ -141,5 +145,10 @@ qbodega/
     │   ├── actualizar_promocion_view.py    # Actualización de promociones
     │   └── eliminar_promocion_view.py      # Eliminación de promociones
     └── ventas/
-
+        ├── init.py
+        ├── ventas_dashboard_view.py        # Dashboard principal
+        ├── buscar_venta_view.py            # Búsqueda de ventas
+        ├── registrar_venta_view.py         # Registro de ventas
+        ├── devolucion_view.py              # Devolución de productos
+        └── detalle_venta_view.py           # Detalle de Venta
 ```
